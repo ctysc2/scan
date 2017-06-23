@@ -12,6 +12,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
     buildTypes {
         release {
@@ -19,6 +22,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/libs']
+            assets.srcDirs = ['src/main/assets', 'src/main/assets/']
+        }
+    }
+
 }
 buildscript {
     repositories {
@@ -30,19 +40,20 @@ buildscript {
 }
 greendao {
     schemaVersion 1
-    daoPackage 'com.home.rw.greendao.gen'
+    daoPackage 'com.bolue.scan.greendao.gen'
     targetGenDir 'src/main/java'
 }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:cardview-v7:24.2.0'
+    compile project(':calendar_lib')
+    compile project(':xrecycleview_lib')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:cardview-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:cardview-v7:24.2.1'
     compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
@@ -53,18 +64,23 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.google.dagger:dagger:2.2'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
     compile 'com.github.zhaokaiqiang.klog:library:1.4.0'
     compile 'com.facebook.fresco:fresco:0.12.0'
     compile 'com.facebook.fresco:imagepipeline-okhttp:0.9.0'
     compile 'com.wang.avi:library:2.1.3'
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.3.0'
-    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'me.kareluo.ui:popmenu:1.1.0'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     apt 'com.google.dagger:dagger-compiler:2.2'
     provided 'org.glassfish:javax.annotation:10.0-b28'
-    testCompile 'junit:junit:4.12'
+    compile files('src/main/libs/zxing.jar')
+    compile files('src/main/libs/zbar.jar')
+    compile files('src/main/libs/AMap3DMap_5.2.0_AMapNavi_5.1.0_AMapSearch_5.1.0_AMapLocation_3.4.0_20170602.jar')
 }

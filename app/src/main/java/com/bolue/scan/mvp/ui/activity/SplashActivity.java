@@ -1,0 +1,57 @@
+package com.bolue.scan.mvp.ui.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+
+import com.bolue.scan.R;
+import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
+import com.bolue.scan.utils.TransformUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Observer;
+
+public class SplashActivity extends BaseActivity {
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_splash;
+    }
+
+    @Override
+    public void initInjector() {
+        mActivityComponent.inject(this);
+    }
+
+    @Override
+    public void initViews() {
+        //过3秒执行下一步
+        Observable.timer(1, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                .subscribe(new Observer<Object>() {
+                    @Override
+                    public void onCompleted() {
+                        startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Object data) {
+
+                    }
+
+                });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initViews();
+    }
+}

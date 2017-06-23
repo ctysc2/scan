@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">scan</string>
+    <string name="app_name">铂略签到</string>
+    <string name="dialog_update_title">更新参会数据</string>
+    <string name="dialog_update">该线下课的参会数据有更新，按确定更新。</string>
+    <string name="dialog_download_title">下载参会数据</string>
+    <string name="dialog_download">如果您使用离线模式，请按确定下载该线下课的参会数据。</string>
 </resources>
