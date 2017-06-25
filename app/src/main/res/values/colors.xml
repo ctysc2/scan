@@ -14,7 +14,7 @@
 
     <color name="viewfinder_mask">#60000000</color>
     <color name="result_view">#b0000000</color>
-    <color name="possible_result_points">#c0ffff00</color>
+    <color name="possible_result_points">#c02196F3</color>
     <color name="blue">#2196F3</color>
 
     <!--对话框-->
@@ -24,4 +24,7 @@
     <color name="color_dialog_confirm">#2196F3</color>
     <color name="color_dialog_loading_bac">#323232</color>
     <color name="color_dialog_loading_float">#99000000</color>
+
+
+    <color name="color_bottom_scan">#EBEBEB</color>
 </resources>

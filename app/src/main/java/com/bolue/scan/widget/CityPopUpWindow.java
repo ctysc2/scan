@@ -80,7 +80,7 @@ public class CityPopUpWindow extends PopupWindow{
 
         backGroundFloatOn();
         setContentView(container);
-        //setFocusable(true);
+        setFocusable(true);
         setTouchable(true);
         setTouchInterceptor(new View.OnTouchListener() {
             @Override

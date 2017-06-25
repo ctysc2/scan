@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     private final int TYPE_LABEL = 1;
 
     //城市id
-    private int mCity_id = 355;
+    private int mCity_id = -1;
 
     @OnClick({R.id.rl_last_month,R.id.rl_next_month,R.id.ll_location})
     public void onClick(View v){
@@ -165,7 +165,6 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     }
     @Override
     public void initViews() {
-
 
 
         mCalendarDateView.setAdapter(new CaledarAdapter() {
@@ -252,20 +251,11 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                //startActivity(new Intent(MainActivity.this,OfflineDetailActivity.class));
-                //startActivity(new Intent(MainActivity.this,AMapViewActivity.class));
-                //DialogUtils.create(MainActivity.this).show();
-//                DialogUtils.create(MainActivity.this).show(new AlertDialogListener() {
-//                    @Override
-//                    public void onConFirm() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancel() {
-//
-//                    }
-//                },"s","b");
+                Intent intent = new Intent(MainActivity.this,OfflineDetailActivity.class);
+                intent.putExtra("id",dataSource.get(position).getId());
+                startActivity(intent);
+
+
 
             }
         });
@@ -318,11 +308,16 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     @Override
     public void onViewCreated(CalendarView view,List<CalendarBean> bean) {
-        ReservePresenterImpl mReservePresenterImpl = new ReservePresenterImpl(new ReserveInteractorImpl());
-        mReservePresenterImpl.attachView(this);
-        mReservePresenterImpl.getReserveList(view,bean.get(bean.size()/2).year,bean.get(bean.size()/2).moth,mCity_id);
-        Log.i("Calendar","onViewCreated year:"+bean.get(bean.size()/2).year+" month:"+bean.get(bean.size()/2).moth);
-    }
+
+        Log.i("Calendar","onViewCreated year:"+bean.get(bean.size()/2).year+" month:"+bean.get(bean.size()/2).moth+" mCity_id:"+mCity_id);
+
+
+        if(mCity_id != -1){
+            ReservePresenterImpl mReservePresenterImpl = new ReservePresenterImpl(new ReserveInteractorImpl());
+            mReservePresenterImpl.attachView(this);
+            mReservePresenterImpl.getReserveList(view,bean.get(bean.size()/2).year,bean.get(bean.size()/2).moth,mCity_id);
+       }
+   }
 
     @Override
     public void showProgress(int reqType) {
@@ -492,15 +487,19 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     public void getLabelViewCompleted(LabelEntity entity) {
         if(entity.getErr() == null){
 
+            ArrayList<LabelEntity.DataEntity.City> list = entity.getResult().getCity();
             for (LabelEntity.DataEntity.City city:
-                    entity.getResult().getCity()) {
+                    list) {
                 if(city.getCity_name().equals("上海")){
                     mCity_id = city.getCity_id();
+                    city.setSelected(true);
                 }
             }
-            initViews();
-            mLLContainer.setVisibility(View.VISIBLE);
-            mCityList = entity.getResult().getCity();
+            mCityList = list;
+
+            mCalendarLayout.reCheckIsOpen();
+            Log.i("Calendar","notifyDataSetChanged");
+            mCalendarDateView.getAdapter().notifyDataSetChanged();
         }else{
             Toast.makeText(this,"获取城市列表失败",Toast.LENGTH_SHORT).show();
         }
@@ -522,6 +521,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 mCity_id = mCityList.get(position).getCity_id();
                 isShiftCity = true;
                 mCalendarLayout.reCheckIsOpen();
+                Log.i("Calendar","notifyDataSetChanged");
                 mCalendarDateView.getAdapter().notifyDataSetChanged();
 
             }

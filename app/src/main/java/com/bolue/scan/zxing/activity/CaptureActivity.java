@@ -32,6 +32,9 @@ import com.bolue.scan.zxing.view.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+
 /**
  * Initial the camera
  * @author Ryan.Tang
@@ -48,6 +51,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 	private boolean playBeep;
 	private static final float BEEP_VOLUME = 0.10f;
 	private boolean vibrate;
+
 //	private Button cancelScanButton;
 
 	@Override
@@ -64,7 +68,14 @@ public class CaptureActivity extends BaseActivity implements Callback {
 	public void initViews() {
 
 	}
-
+	@OnClick({R.id.rl_back})
+	public void onClick(View v){
+		switch (v.getId()){
+			case R.id.rl_back:
+				finish();
+				break;
+		}
+	}
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

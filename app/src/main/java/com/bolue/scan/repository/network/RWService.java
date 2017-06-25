@@ -6,6 +6,7 @@ import com.bolue.scan.mvp.entity.CalendarEntity;
 import com.bolue.scan.mvp.entity.CarouselEntity;
 import com.bolue.scan.mvp.entity.IndexEntity;
 import com.bolue.scan.mvp.entity.LabelEntity;
+import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 
 import retrofit2.http.Field;
 import retrofit2.http.GET;
@@ -37,5 +38,10 @@ public interface RWService {
     @GET("labelList")
     Observable<LabelEntity> getLabelList(
             @Query("type") String type);
+
+    //线下课详情
+    @GET("offlineDetailSign")
+    Observable<OffLineLessonEntity> getOffLineDetail(
+            @Query("id") int id);
 
 }

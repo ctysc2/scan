@@ -25,9 +25,9 @@ public class SystemTool {
     private static final String TAG = "SystemTool";
 
     //获取时间格式字符串
-    public static String getDataTime(String format) {
+    public static String getDataTime(String format,long ts) {
         SimpleDateFormat df = new SimpleDateFormat(format);
-        return df.format(new Date());
+        return df.format(new Date(ts));
     }
 
     //获取手机IMEI值

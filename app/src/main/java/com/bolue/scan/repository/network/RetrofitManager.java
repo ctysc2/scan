@@ -12,6 +12,7 @@ import com.bolue.scan.mvp.entity.CarouselEntity;
 import com.bolue.scan.mvp.entity.HeaderEntity;
 import com.bolue.scan.mvp.entity.IndexEntity;
 import com.bolue.scan.mvp.entity.LabelEntity;
+import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.utils.PreferenceUtils;
 import com.bolue.scan.utils.SystemTool;
 import com.google.gson.Gson;
@@ -35,6 +36,8 @@ import okio.BufferedSource;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 import rx.Observable;
 
 import static okhttp3.internal.Util.UTF_8;
@@ -112,11 +115,11 @@ public class RetrofitManager {
             }
             //header添加bolueClient和MyAuth
             Response originalResponse;
-//            String openid = PreferenceUtils.getPrefString(App.getAppContext(),"openid","");
-//            String code = PreferenceUtils.getPrefString(App.getAppContext(),"code","");
+            String openid = PreferenceUtils.getPrefString(App.getAppContext(),"openid","");
+            String code = PreferenceUtils.getPrefString(App.getAppContext(),"code","");
 
-            String openid = "c2cacc74-09ef-11e7-bc9a-288023a21480";
-            String code = "2e43f338a0bcbbf024ac44d4fbb30670";
+//            String openid = "c2cacc74-09ef-11e7-bc9a-288023a21480";
+//            String code = "2e43f338a0bcbbf024ac44d4fbb30670";
 
             request = request.newBuilder()
                     .header("bolueClient", "android")
@@ -220,6 +223,12 @@ public class RetrofitManager {
     //获取线下课城市列表
     public Observable<LabelEntity> getLabelList(String type) {
         return mRWService.getLabelList(type);
+    }
+
+    //获取线下课详情
+
+    public Observable<OffLineLessonEntity> getOffLineDetail(int id){
+        return mRWService.getOffLineDetail(id);
     }
 }
 

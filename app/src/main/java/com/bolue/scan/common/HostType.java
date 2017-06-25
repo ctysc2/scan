@@ -17,6 +17,7 @@ public class HostType {
     public static final int CAROUSEL = 3;
     public static final int RESERVE = 4;
     public static final int LABEL = 5;
+    public static final int OFFLINE_DETAIL = 6;
     /**
      * 替代枚举的方案，使用IntDef保证类型安全
      */

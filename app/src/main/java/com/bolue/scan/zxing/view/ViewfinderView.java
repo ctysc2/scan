@@ -80,7 +80,7 @@ public final class ViewfinderView extends View {
 	/**
 	 * 字体距离扫描框下面的距离
 	 */
-	private static final int TEXT_PADDING_TOP = 30;
+	private static final int TEXT_PADDING_TOP = 50;
 	
 	/**
 	 * 画笔对象的引用
@@ -166,7 +166,7 @@ public final class ViewfinderView extends View {
 		} else {
 
 			//画扫描框边上的角，总共8个部分
-			paint.setColor(Color.rgb(156, 188, 58));
+			paint.setColor(Color.parseColor("#2196F3"));
 			canvas.drawRect(frame.left, frame.top, frame.left + ScreenRate,
 					frame.top + CORNER_WIDTH, paint);
 			canvas.drawRect(frame.left, frame.top, frame.left + CORNER_WIDTH, frame.top
@@ -198,9 +198,11 @@ public final class ViewfinderView extends View {
 			paint.setTextSize(TEXT_SIZE * density);
 //			paint.setAlpha(0x40);
 			paint.setTypeface(Typeface.create("System", Typeface.BOLD));
-			canvas.drawText("将二维码放入框内，即可自动扫描", frame.left*2/3, (float) (frame.bottom + (float)TEXT_PADDING_TOP *density), paint);
-			
-			
+			paint.setTextAlign(Paint.Align.CENTER);
+			canvas.drawText("将二维码放入框内，即可扫码签到",frame.centerX(),(float) (frame.bottom + (float)TEXT_PADDING_TOP *density),paint);
+			//canvas.drawText("将二维码放入框内，即可扫码签到", frame.left*2/3+30, (float) (frame.bottom + (float)TEXT_PADDING_TOP *density), paint);
+
+
 
 			Collection<ResultPoint> currentPossible = possibleResultPoints;
 			Collection<ResultPoint> currentLast = lastPossibleResultPoints;

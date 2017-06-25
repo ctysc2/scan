@@ -24,6 +24,7 @@ public class ApiConstants {
             case HostType.CAROUSEL:
             case HostType.RESERVE:
             case HostType.LABEL:
+            case HostType.OFFLINE_DETAIL:
                 host = URL;
                 break;
             default:

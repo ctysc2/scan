@@ -7,6 +7,8 @@ import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -29,6 +31,7 @@ import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.functions.Action1;
 
 public class AMapViewActivity extends BaseActivity {
@@ -36,6 +39,9 @@ public class AMapViewActivity extends BaseActivity {
 
     @BindView(R.id.map)
     MapView mMapView;
+
+    @BindView(R.id.tv_toolbar_title)
+    TextView mtitle;
 
     private AMap aMap;
 
@@ -53,9 +59,19 @@ public class AMapViewActivity extends BaseActivity {
     public void initInjector() {
 
     }
+    @OnClick({R.id.rl_back})
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.rl_back:
+                finish();
+                break;
 
+        }
+
+    }
     @Override
     public void initViews() {
+        mtitle.setText("地图");
         rxPermissions = new RxPermissions(this);
         rxPermissions
                 .request(
@@ -67,12 +83,16 @@ public class AMapViewActivity extends BaseActivity {
                     public void call(Boolean grant) {
                         if(grant){
                             aMap = mMapView.getMap();
-                            LatLng ll = new LatLng(31.217735,121.357759);
-                            aMap.addMarker(new MarkerOptions().position(ll).title("大酒店"));
-                            aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 18));
-                          Log.i("Location","权限通过");
+                            Intent intent = getIntent();
+                            if(intent != null ){
+                                LatLng ll = new LatLng(intent.getDoubleExtra("latitude",0),intent.getDoubleExtra("longitude",0));
+                                aMap.addMarker(new MarkerOptions().position(ll).title(intent.getStringExtra("name")));
+                                aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 18));
+                            }
+
+                            //Log.i("Location","权限通过");
                         }else{
-                            Log.i("Location","权限被拒绝");
+                            //Log.i("Location","权限被拒绝");
                         }
 
                     }

@@ -42,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:lines="2"
+                android:ellipsize="end"
                 android:textColor="@color/black"/>
             <RelativeLayout
                 android:layout_below="@+id/tv_title"

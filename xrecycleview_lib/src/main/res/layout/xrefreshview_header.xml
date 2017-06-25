@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/xrefreshview_header_text"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:background="#E4E4E4"
+    android:layout_height="60dp"
+    android:background="#FAFAFA"
     android:gravity="center"
     android:orientation="horizontal"
 >
@@ -14,8 +14,8 @@
         android:id="@+id/xrefreshview_header_ok"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_centerInParent="true"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
         app:indicatorName="LineScalePulseOutIndicator"
         app:indicatorColor="#333333"
         />
@@ -30,8 +30,8 @@
         <TextView
             android:id="@+id/xrefreshview_header_hint_textview"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
             android:textColor="#333333"
             android:text="@string/xrefreshview_header_hint_normal" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/xrefreshview_header_hint_textview"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="25dp"
             android:text="@string/xrefreshview_never_refresh"
             android:textSize="12sp" />
     </RelativeLayout>
