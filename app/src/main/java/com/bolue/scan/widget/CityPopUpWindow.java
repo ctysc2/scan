@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 
 public class CityPopUpWindow extends PopupWindow{
 
-    private ArrayList<LabelEntity.DataEntity.City> cities;
+    private ArrayList<LabelEntity.DataEntity.City> cities = new ArrayList<>();
 
     private Activity mActivity;
 

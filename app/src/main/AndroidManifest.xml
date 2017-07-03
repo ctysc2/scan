@@ -23,8 +23,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="faac0c452c4dbe73fe77b78160daf92f">
-        </meta-data>
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="faac0c452c4dbe73fe77b78160daf92f" />
+
         <activity
             android:name=".mvp.ui.activity.SplashActivity"
             android:screenOrientation="portrait">
@@ -39,13 +41,15 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".zxing.activity.CaptureActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity android:name=".mvp.ui.activity.OfflineDetailActivity" />
-        <activity android:name=".mvp.ui.activity.AMapViewActivity"></activity>
+        <activity android:name=".mvp.ui.activity.AMapViewActivity" />
+        <activity android:name=".mvp.ui.activity.ParticipantDetailActivity" />
+        <activity android:name=".mvp.ui.activity.LoginActivity"></activity>
     </application>
 
 </manifest>

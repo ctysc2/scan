@@ -7,8 +7,10 @@ import android.content.Context;
 import com.bolue.scan.di.module.ActivityModule;
 import com.bolue.scan.di.scope.ContextLife;
 import com.bolue.scan.di.scope.PerActivity;
+import com.bolue.scan.mvp.ui.activity.LoginActivity;
 import com.bolue.scan.mvp.ui.activity.MainActivity;
 import com.bolue.scan.mvp.ui.activity.OfflineDetailActivity;
+import com.bolue.scan.mvp.ui.activity.ParticipantDetailActivity;
 import com.bolue.scan.mvp.ui.activity.SplashActivity;
 
 import dagger.Component;
@@ -31,6 +33,8 @@ public interface ActivityComponent {
     void inject(MainActivity mainActivity);
     void inject(SplashActivity splashActivity);
     void inject(OfflineDetailActivity offlineDetailActivity);
+    void inject(ParticipantDetailActivity participantDetailActivity);
+    void inject(LoginActivity loginActivity);
 
 
 }

@@ -27,6 +27,7 @@ import com.bolue.scan.mvp.presenter.impl.OffLineDetailPresenterImpl;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
 import com.bolue.scan.mvp.view.OffLineDetailView;
 import com.bolue.scan.utils.DateTransformUtil;
+import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
 import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.tbruyelle.rxpermissions.RxPermissions;
@@ -103,6 +104,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         rxPermissions = new RxPermissions(this);
         mOffLineDetailPresenterImpl.attachView(this);
         if(id != -1){
+            mOffLineDetailPresenterImpl.beforeRequest();
             mOffLineDetailPresenterImpl.getOffLineDetail(id);
         }
 
@@ -114,6 +116,12 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                OffLineLessonEntity.DataEntity.Member member = dataSource.get(position);
+                Intent intent = new Intent(OfflineDetailActivity.this,ParticipantDetailActivity.class);
+                intent.putExtra("user_id",member.getUser_id());
+                intent.putExtra("is_invited",member.is_invited());
+                intent.putExtra("resource_id",id);
+                startActivity(intent);
 
             }
         });
@@ -226,12 +234,18 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
     @Override
     public void showProgress(int reqType) {
-
+        if(mLoadDialog == null){
+            mLoadDialog = DialogUtils.create(this);
+            mLoadDialog.show("正在获取数据");
+        }
     }
 
     @Override
     public void hideProgress(int reqType) {
-
+        if(mLoadDialog != null){
+            mLoadDialog.dismiss();
+            mLoadDialog = null;
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.bolue.scan.mvp.entity.HeaderEntity;
 import com.bolue.scan.mvp.entity.IndexEntity;
 import com.bolue.scan.mvp.entity.LabelEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
+import com.bolue.scan.mvp.entity.ParticipantEntity;
 import com.bolue.scan.utils.PreferenceUtils;
 import com.bolue.scan.utils.SystemTool;
 import com.google.gson.Gson;
@@ -86,9 +87,9 @@ public class RetrofitManager {
                         1024 * 1024 * 100);
                 if (sOkHttpClient == null) {
                     sOkHttpClient = new OkHttpClient.Builder().cache(cache)
-                            .connectTimeout(60, TimeUnit.SECONDS)
-                            .readTimeout(60, TimeUnit.SECONDS)
-                            .writeTimeout(60, TimeUnit.SECONDS)
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(10, TimeUnit.SECONDS)
+                            .writeTimeout(10, TimeUnit.SECONDS)
                             .retryOnConnectionFailure(true)
                             .addInterceptor(mLoggingInterceptor)
                             .addNetworkInterceptor(mRewriteCacheControlInterceptor).build();
@@ -226,9 +227,17 @@ public class RetrofitManager {
     }
 
     //获取线下课详情
-
     public Observable<OffLineLessonEntity> getOffLineDetail(int id){
         return mRWService.getOffLineDetail(id);
+    }
+
+    //获取报名人详情
+    //报名人详情
+    public Observable<ParticipantEntity> getParticipantDetail(int user_id,
+                                                              boolean isInvited,
+                                                              int resource_id
+    ){
+        return mRWService.getParticipantDetail(user_id,isInvited == true?1:0,resource_id);
     }
 }
 

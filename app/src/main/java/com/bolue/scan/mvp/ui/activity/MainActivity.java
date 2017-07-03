@@ -105,7 +105,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     @BindView(R.id.ll_location)
     LinearLayout mLLLocation;
 
-    ArrayList<LabelEntity.DataEntity.City> mCityList;
+    ArrayList<LabelEntity.DataEntity.City> mCityList = new ArrayList<>();
 
     private NormalRecyclerAdapter adapter;
 

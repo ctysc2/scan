@@ -24,7 +24,6 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         android:ellipsize="end"
-        android:text="高新技术企业认定认定认定认定高新技术企认定认定认定高新技术企(西安)"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="10dp"
@@ -73,7 +72,6 @@
                     android:layout_toLeftOf="@+id/iv_right"
                     android:textColor="#333333"
                     android:ellipsize="end"
-                    android:text="福建省地方就是了解封建势力"
                     />
                 <ImageView
                     android:id="@+id/iv_right"
@@ -107,7 +105,6 @@
                     android:id="@+id/tv_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2016年9月30日-31日"
                     android:textColor="#333333"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center_vertical"
