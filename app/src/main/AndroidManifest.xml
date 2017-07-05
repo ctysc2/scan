@@ -49,7 +49,10 @@
         <activity android:name=".mvp.ui.activity.OfflineDetailActivity" />
         <activity android:name=".mvp.ui.activity.AMapViewActivity" />
         <activity android:name=".mvp.ui.activity.ParticipantDetailActivity" />
-        <activity android:name=".mvp.ui.activity.LoginActivity" />
+        <activity android:name=".mvp.ui.activity.LoginActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name=".mvp.ui.activity.OffLineSignListActivity"></activity>
     </application>
 

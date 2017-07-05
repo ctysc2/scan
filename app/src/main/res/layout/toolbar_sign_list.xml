@@ -31,7 +31,7 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:layout_centerInParent="true"
-            android:text="线下课签到"/>
+            android:text="离线签到"/>
         <TextView
             android:id="@+id/tv_edit"
             android:layout_width="wrap_content"

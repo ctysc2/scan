@@ -31,6 +31,6 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:layout_centerInParent="true"
-            android:text="线下课签到"/>
+            android:text="签到详情"/>
     </RelativeLayout>
 </LinearLayout>

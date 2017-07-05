@@ -12,6 +12,8 @@ import com.bolue.scan.mvp.entity.CarouselEntity;
 import com.bolue.scan.mvp.entity.HeaderEntity;
 import com.bolue.scan.mvp.entity.IndexEntity;
 import com.bolue.scan.mvp.entity.LabelEntity;
+import com.bolue.scan.mvp.entity.LoginEntity;
+import com.bolue.scan.mvp.entity.LoginRequestEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.mvp.entity.ParticipantEntity;
 import com.bolue.scan.utils.PreferenceUtils;
@@ -37,7 +39,9 @@ import okio.BufferedSource;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -238,6 +242,12 @@ public class RetrofitManager {
                                                               int resource_id
     ){
         return mRWService.getParticipantDetail(user_id,isInvited == true?1:0,resource_id);
+    }
+
+    //登录
+    public Observable<LoginEntity> doLogin(LoginRequestEntity entity){
+
+        return mRWService.doLogin(entity);
     }
 }
 

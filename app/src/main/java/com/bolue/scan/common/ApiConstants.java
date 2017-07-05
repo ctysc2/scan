@@ -26,6 +26,7 @@ public class ApiConstants {
             case HostType.LABEL:
             case HostType.OFFLINE_DETAIL:
             case HostType.PARTICIPANT_DETAIL:
+            case HostType.LOGIN:
                 host = URL;
                 break;
             default:

@@ -5,10 +5,10 @@ package com.bolue.scan.mvp.entity.base;
  */
 
 public class BaseEntity {
-    private Error err;
+    private String err;
     private User user;
 
-    public void setErr(Error err) {
+    public void setErr(String err) {
         this.err = err;
     }
 
@@ -16,7 +16,7 @@ public class BaseEntity {
         this.user = user;
     }
 
-    public Error getErr() {
+    public String getErr() {
         return err;
     }
 
@@ -24,9 +24,7 @@ public class BaseEntity {
         return user;
     }
 
-    class Error{
 
-    }
     
     class User{
         private boolean isLogined;

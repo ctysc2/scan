@@ -39,6 +39,9 @@
                 android:scaleType="fitCenter"
                 android:visibility="gone"
                 android:src="@drawable/selector_checkbox"/>
+            <RelativeLayout
+                android:layout_width="120dp"
+                android:layout_height="match_parent">
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/iv_breif"
                 android:layout_width="120dp"
@@ -47,6 +50,36 @@
                 app:placeholderImage="@drawable/logo_default"
                 app:placeholderImageScaleType="centerCrop"
                 />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#52000000">
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="22dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="2dp"
+                    android:background="@drawable/shape_logout_bac"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="2dp">
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/icon_uploaded"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textSize="12sp"
+                        android:text="已上传"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/color_text_white"
+                        />
+                </LinearLayout>
+            </RelativeLayout>
+            </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

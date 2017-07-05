@@ -20,10 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,8 @@ import com.bolue.scan.mvp.view.LabelView;
 import com.bolue.scan.mvp.view.ReserveView;
 import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
+import com.bolue.scan.utils.PreferenceUtils;
+import com.bolue.scan.utils.TransformUtils;
 import com.bolue.scan.widget.CityPopUpWindow;
 import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.codbking.calendar.CaledarAdapter;
@@ -62,16 +66,20 @@ import com.codbking.calendar.CalendarView;
 import com.codbking.calendar.CalendarViewCreatedListener;
 import com.codbking.calendar.Globle;
 import com.codbking.calendar.entity.CalendarData;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
 import rx.functions.Action1;
 
 public class MainActivity extends BaseActivity implements CalendarViewCreatedListener,ReserveView,CalendarOnPageChangedListener,AMapLocationListener,LabelView {
@@ -105,6 +113,9 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     @BindView(R.id.ll_location)
     LinearLayout mLLLocation;
 
+    @BindView(R.id.rl_menu)
+    RelativeLayout mRlMenu;
+
     ArrayList<LabelEntity.DataEntity.City> mCityList = new ArrayList<>();
 
     private NormalRecyclerAdapter adapter;
@@ -127,10 +138,15 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     private final int TYPE_LABEL = 1;
 
+    private SlidingMenu menu;
+
+    private Button mLogOut;
+
+    private boolean isExit = false;
     //城市id
     private int mCity_id = -1;
 
-    @OnClick({R.id.rl_last_month,R.id.rl_next_month,R.id.ll_location})
+    @OnClick({R.id.rl_last_month,R.id.rl_next_month,R.id.ll_location,R.id.rl_menu})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.rl_last_month:
@@ -143,6 +159,9 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 break;
             case R.id.ll_location:
                 createPopWin();
+                break;
+            case R.id.rl_menu:
+                menu.toggle();
                 break;
         }
 
@@ -217,28 +236,43 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         //暂时取消定位功能固定上海
         //startLocation();
 
+
+        menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.RIGHT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        menu.setFadeDegree(0.35f);
+        menu.setOffsetFadeDegree(0.2f);
+        menu.setBehindWidth((int)DimenUtil.dp2px(160));
+        menu.setFadeEnabled(true);
+        menu.setMenu(R.layout.menu_item);
+        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+
+        mLogOut = (Button)findViewById(R.id.bt_logout);
+        mLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(MainActivity.this,"退出登录",Toast.LENGTH_SHORT).show();
+
+                PreferenceUtils.setPrefString(MainActivity.this,"userName","");
+                PreferenceUtils.setPrefString(MainActivity.this,"passWord","");
+                PreferenceUtils.setPrefString(MainActivity.this,"openid","");
+                PreferenceUtils.setPrefString(MainActivity.this,"code","");
+
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void updateRecycleView(CalendarBean bean){
 
-        //Log.i("Calendar","onItemClick bean:"+bean);
         ArrayList<CalendarData> lessons = bean.getLessons();
         if(lessons == null || lessons.size() == 0){
             dataSource = new ArrayList<CalendarData>();
-            //Log.i("Calendar","onItemClick 没课!");
         }else{
-            //Log.i("Calendar","onItemClick 有课!");
             dataSource = lessons;
-//            for(int i = 0;i<lessons.size();i++){
-//                CalendarData data = lessons.get(i);
-//                OffLineLessonEntity entity = new OffLineLessonEntity(
-//                        data.getTitle(),
-//                        "",
-//                        data.getStart_time()
-//                );
-//                dataSource.add(entity);
-//            }
-
         }
         adapter.setData(dataSource);
     }
@@ -253,6 +287,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
             public void onItemClick(int position) {
                 Intent intent = new Intent(MainActivity.this,OfflineDetailActivity.class);
                 intent.putExtra("id",dataSource.get(position).getId());
+                intent.putExtra("isOnlineMode",true);
                 startActivity(intent);
 
 
@@ -477,9 +512,9 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        Log.i("Location","onLocationChanged city:"+aMapLocation.getCity());
-        Log.i("Location","onLocationChanged Latitude:"+aMapLocation.getLatitude());
-        Log.i("Location","onLocationChanged Longitude:"+aMapLocation.getLongitude());
+        //Log.i("Location","onLocationChanged city:"+aMapLocation.getCity());
+        //Log.i("Location","onLocationChanged Latitude:"+aMapLocation.getLatitude());
+        //Log.i("Location","onLocationChanged Longitude:"+aMapLocation.getLongitude());
         Toast.makeText(this,aMapLocation.getCity(),Toast.LENGTH_SHORT).show();
     }
 
@@ -498,7 +533,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
             mCityList = list;
 
             mCalendarLayout.reCheckIsOpen();
-            Log.i("Calendar","notifyDataSetChanged");
+            //Log.i("Calendar","notifyDataSetChanged");
             mCalendarDateView.getAdapter().notifyDataSetChanged();
         }else{
             Toast.makeText(this,"获取城市列表失败",Toast.LENGTH_SHORT).show();
@@ -529,4 +564,39 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if(isExit){
+            finish();
+        }else{
+            isExit = true;
+            Toast.makeText(this,"再按一次退出",Toast.LENGTH_SHORT).show();
+            Observable.timer(2, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                    .subscribe(new Observer<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            isExit = false;
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object data) {
+
+                        }
+
+                    });
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!isFirstLoad && mCalendarDateView!=null)
+            mCalendarDateView.getAdapter().notifyDataSetChanged();
+    }
 }

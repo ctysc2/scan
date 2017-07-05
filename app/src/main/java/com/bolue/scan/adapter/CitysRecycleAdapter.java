@@ -63,6 +63,7 @@ public class CitysRecycleAdapter extends RecyclerView.Adapter<CitysRecycleAdapte
         }else{
             holder.text.setTextColor(Color.parseColor("#333333"));
         }
+        holder.itemView.setBackgroundColor(Color.parseColor("#FAFAFA"));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

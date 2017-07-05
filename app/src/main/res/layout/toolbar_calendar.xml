@@ -33,7 +33,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="上海市"/>
             <ImageView
-                android:layout_width="10dp"
+                android:layout_width="8dp"
                 android:layout_height="5dp"
                 android:layout_marginLeft="5dp"
                 android:src="@drawable/icon_arrow_drop_down"/>
@@ -46,5 +46,22 @@
             android:textSize="20sp"
             android:layout_centerInParent="true"
             android:text="线下课签到"/>
+        <RelativeLayout
+            android:id="@+id/rl_menu"
+            android:layout_width="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/layout_back"
+            android:layout_height="45dp">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/icon_menu"
+                android:layout_centerInParent="true"
+                android:scaleType="centerInside"
+                />
+        </RelativeLayout>
+
     </RelativeLayout>
 </LinearLayout>

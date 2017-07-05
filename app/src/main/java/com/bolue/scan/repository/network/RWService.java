@@ -6,11 +6,15 @@ import com.bolue.scan.mvp.entity.CalendarEntity;
 import com.bolue.scan.mvp.entity.CarouselEntity;
 import com.bolue.scan.mvp.entity.IndexEntity;
 import com.bolue.scan.mvp.entity.LabelEntity;
+import com.bolue.scan.mvp.entity.LoginEntity;
+import com.bolue.scan.mvp.entity.LoginRequestEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.mvp.entity.ParticipantEntity;
 
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -52,4 +56,10 @@ public interface RWService {
             @Query("is_invited") int isInvited,
             @Query("resource_id") int resource_id
             );
+
+    //登录
+    @POST("login")
+    Observable<LoginEntity> doLogin(
+            @Body LoginRequestEntity entity
+    );
 }

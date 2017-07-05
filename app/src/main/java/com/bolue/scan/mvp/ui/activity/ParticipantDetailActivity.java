@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bolue.scan.R;
@@ -41,6 +42,12 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     @BindView(R.id.tv_email)
     TextView mEmail;
 
+    @BindView(R.id.ll_scan)
+    LinearLayout mLLScan;
+
+    @BindView(R.id.ll_scaned)
+    LinearLayout mLLScaned;
+
     @Inject
     ParticipantPresenterImpl mParticipantPresenterImpl;
 
@@ -49,6 +56,8 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     private boolean isInvited = false;
 
     private int resource_id = -1;
+
+    private int status = 5;
 
     @OnClick({R.id.rl_back,R.id.ll_scan})
     public void onClick(View v){
@@ -82,7 +91,15 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
         id = intent.getIntExtra("user_id",-1);
         isInvited = intent.getBooleanExtra("is_invited",false);
         resource_id = intent.getIntExtra("resource_id",-1);
+        status = intent.getIntExtra("status",5);
 
+        if(status == 5){
+            mLLScan.setVisibility(View.GONE);
+            mLLScaned.setVisibility(View.VISIBLE);
+        }else{
+            mLLScan.setVisibility(View.VISIBLE);
+            mLLScaned.setVisibility(View.GONE);
+        }
         mParticipantPresenterImpl.attachView(this);
         mParticipantPresenterImpl.beforeRequest();
         mParticipantPresenterImpl.getParticipantDetail(id,isInvited,resource_id);

@@ -61,7 +61,6 @@ public class OffLineSignListActivity extends BaseActivity {
 
     private boolean isSelectedAll = false;
 
-    private SlidingMenu menu;
     @OnClick({R.id.rl_back,R.id.tv_edit,R.id.tv_selectAll,R.id.tv_delete})
     public void onClick(View v){
         switch (v.getId()){
@@ -227,8 +226,10 @@ public class OffLineSignListActivity extends BaseActivity {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(OffLineSignListActivity.this,"item",Toast.LENGTH_SHORT).show();
-                menu.toggle();
+                Intent intent = new Intent(OffLineSignListActivity.this,OfflineDetailActivity.class);
+                intent.putExtra("id",dataSource.get(position).getId());
+                intent.putExtra("isOnlineMode",false);
+                startActivity(intent);
             }
         });
         mAdapter.setOnSelectClickListener(new OnItemClickListener() {
@@ -260,14 +261,7 @@ public class OffLineSignListActivity extends BaseActivity {
         xRefreshView.enableRecyclerViewPullUp(true);
 
 
-        menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.RIGHT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        menu.setFadeDegree(0.35f);
-        menu.setOffsetFadeDegree(0.2f);
-        menu.setBehindWidth((int)DimenUtil.dp2px(160));
-        menu.setFadeEnabled(true);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+
 
     }
 

@@ -27,5 +27,11 @@
     <color name="color_dialog_loading_float">#99000000</color>
 
 
+
+    <!--文字颜色-->
+    <color name="color_text_white">#DDFFFFFF</color>
+    <color name="color_login_error">#DDF37633</color>
+    <color name="color_text_edittext">#DD364548</color>
+    <color name="color_text_hint">#DD999999</color>
     <color name="color_bottom_scan">#EBEBEB</color>
 </resources>

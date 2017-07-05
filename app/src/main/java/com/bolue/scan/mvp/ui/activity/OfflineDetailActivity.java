@@ -58,6 +58,12 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     @BindView(R.id.tv_panel_participant_num)
     TextView mPanelNum;
 
+    @BindView(R.id.ll_download)
+    LinearLayout mLLDownload;
+
+    @BindView(R.id.ll_upload)
+    LinearLayout mLLUpLoad;
+
     private TextView mTitle;
 
     private TextView mLocation;
@@ -86,6 +92,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     //线下课id
     private int id;
 
+    private boolean isOnlineMode = true;
+
     private View headerView;
 
     @Override
@@ -101,6 +109,13 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     @Override
     public void initViews() {
         id = getIntent().getIntExtra("id",-1);
+        isOnlineMode = getIntent().getBooleanExtra("isOnlineMode",true);
+
+        if(isOnlineMode){
+            mLLDownload.setVisibility(View.GONE);
+            mLLUpLoad.setVisibility(View.GONE);
+        }
+
         rxPermissions = new RxPermissions(this);
         mOffLineDetailPresenterImpl.attachView(this);
         if(id != -1){
@@ -121,6 +136,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 intent.putExtra("user_id",member.getUser_id());
                 intent.putExtra("is_invited",member.is_invited());
                 intent.putExtra("resource_id",id);
+                intent.putExtra("status",member.getStatus());
                 startActivity(intent);
 
             }
