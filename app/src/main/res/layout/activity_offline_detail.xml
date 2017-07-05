@@ -12,7 +12,7 @@
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_scan"
+        android:layout_above="@+id/ll_scan_container"
         android:background="#FAFAFA">
 
         <android.support.v7.widget.RecyclerView
@@ -30,15 +30,14 @@
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:background="@drawable/layout_scan_b ac"
-
         >
         <LinearLayout
-
+            android:id="@+id/ll_download"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:background="@drawable/layout_scan_bac"
             android:orientation="vertical">
             <ImageView
                 android:layout_width="18dp"
@@ -58,6 +57,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:background="@drawable/layout_scan_bac"
             android:orientation="vertical">
             <ImageView
                 android:layout_width="18dp"
@@ -72,10 +72,12 @@
                 android:textColor="@color/color_dialog_cancle"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/ll_upload"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:background="@drawable/layout_scan_bac"
             android:orientation="vertical">
             <ImageView
                 android:layout_width="18dp"

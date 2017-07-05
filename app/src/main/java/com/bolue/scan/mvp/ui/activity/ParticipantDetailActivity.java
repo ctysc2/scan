@@ -57,6 +57,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
                 finish();
                 break;
             case R.id.ll_scan:
+                startActivity(new Intent(this,OffLineSignListActivity.class));
                 break;
 
         }

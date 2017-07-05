@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA"
+    tools:context="com.bolue.scan.mvp.ui.activity.OffLineSignListActivity">
+    <include layout="@layout/toolbar_sign_list"/>
+    <com.andview.refreshview.XRefreshView
+        android:id="@+id/xrefreshview"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/xrecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:background="#FAFAFA"
+            android:scrollbars="vertical" />
+    </com.andview.refreshview.XRefreshView>
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-60dp"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#04000000"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_selectAll"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="全选"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:background="@drawable/layout_bac"
+                android:textColor="@color/color_dialog_cancle"/>
+            <TextView
+                android:id="@+id/tv_delete"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="删除"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:background="@drawable/layout_bac"
+                android:textColor="@color/color_dialog_confirm"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

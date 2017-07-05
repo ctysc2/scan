@@ -1,1 +1,1 @@
-include ':app',':calendar_lib',':xrecycleview_lib'
+include ':app',':calendar_lib',':xrecycleview_lib',':slidinglibrary'

@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/calendar_lib/calendar_lib.iml" filepath="$PROJECT_DIR$/calendar_lib/calendar_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/scan.iml" filepath="$PROJECT_DIR$/scan.iml" />
+      <module fileurl="file://$PROJECT_DIR$/slidinglibrary/slidinglibrary.iml" filepath="$PROJECT_DIR$/slidinglibrary/slidinglibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/xrecycleview_lib/xrecycleview_lib.iml" filepath="$PROJECT_DIR$/xrecycleview_lib/xrecycleview_lib.iml" />
     </modules>
   </component>

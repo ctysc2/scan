@@ -186,7 +186,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     }
 
 
-    @OnClick({R.id.rl_back,R.id.ll_scan})
+    @OnClick({R.id.rl_back,R.id.ll_scan,R.id.ll_download,R.id.ll_upload})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.rl_back:
@@ -205,6 +205,10 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                                 }
                             }
                         });
+                break;
+            case R.id.ll_download:
+                break;
+            case R.id.ll_upload:
                 break;
 
         }

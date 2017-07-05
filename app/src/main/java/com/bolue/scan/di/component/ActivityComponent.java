@@ -9,6 +9,7 @@ import com.bolue.scan.di.scope.ContextLife;
 import com.bolue.scan.di.scope.PerActivity;
 import com.bolue.scan.mvp.ui.activity.LoginActivity;
 import com.bolue.scan.mvp.ui.activity.MainActivity;
+import com.bolue.scan.mvp.ui.activity.OffLineSignListActivity;
 import com.bolue.scan.mvp.ui.activity.OfflineDetailActivity;
 import com.bolue.scan.mvp.ui.activity.ParticipantDetailActivity;
 import com.bolue.scan.mvp.ui.activity.SplashActivity;
@@ -35,6 +36,7 @@ public interface ActivityComponent {
     void inject(OfflineDetailActivity offlineDetailActivity);
     void inject(ParticipantDetailActivity participantDetailActivity);
     void inject(LoginActivity loginActivity);
+    void inject(OffLineSignListActivity offLineSignListActivity);
 
 
 }
