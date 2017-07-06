@@ -64,6 +64,11 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     @BindView(R.id.ll_upload)
     LinearLayout mLLUpLoad;
 
+    @BindView(R.id.ll_download_online)
+    LinearLayout getmLLDownloadOnline;
+
+
+
     private TextView mTitle;
 
     private TextView mLocation;
@@ -114,6 +119,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         if(isOnlineMode){
             mLLDownload.setVisibility(View.GONE);
             mLLUpLoad.setVisibility(View.GONE);
+        }else{
+            getmLLDownloadOnline.setVisibility(View.GONE);
         }
 
         rxPermissions = new RxPermissions(this);
@@ -202,7 +209,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     }
 
 
-    @OnClick({R.id.rl_back,R.id.ll_scan,R.id.ll_download,R.id.ll_upload})
+    @OnClick({R.id.rl_back,R.id.ll_scan,R.id.ll_download,R.id.ll_upload,R.id.ll_download_online})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.rl_back:
@@ -225,6 +232,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
             case R.id.ll_download:
                 break;
             case R.id.ll_upload:
+                break;
+            case R.id.ll_download_online:
                 break;
 
         }

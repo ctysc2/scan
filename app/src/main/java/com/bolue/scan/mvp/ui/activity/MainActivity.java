@@ -146,6 +146,10 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     //城市id
     private int mCity_id = -1;
 
+    private LinearLayout mLLOffLine;
+
+    private TextView mTvName;
+
     @OnClick({R.id.rl_last_month,R.id.rl_next_month,R.id.ll_location,R.id.rl_menu})
     public void onClick(View v){
         switch (v.getId()){
@@ -263,6 +267,15 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 startActivity(intent);
             }
         });
+        mLLOffLine = (LinearLayout)findViewById(R.id.ll_offline);
+        mLLOffLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,OffLineSignListActivity.class));
+            }
+        });
+        mTvName = (TextView)findViewById(R.id.tv_name);
+        mTvName.setText(PreferenceUtils.getPrefString(this,"userName",""));
 
     }
 
@@ -566,6 +579,12 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     @Override
     public void onBackPressed() {
+
+        if(menu!=null && menu.isMenuShowing() == true){
+            menu.toggle();
+            return;
+        }
+
         if(isExit){
             finish();
         }else{

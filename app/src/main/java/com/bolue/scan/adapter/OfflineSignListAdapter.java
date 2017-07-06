@@ -73,7 +73,7 @@ public class OfflineSignListAdapter extends RecyclerView.Adapter<OfflineSignList
                 break;
             case 1:
                 holder.mStatus.setText("举办中");
-                holder.mStatus.setTextColor(Color.parseColor("#2196F3"));
+                holder.mStatus.setTextColor(Color.parseColor("#21B7C4"));
                 break;
             case 2:
             default:

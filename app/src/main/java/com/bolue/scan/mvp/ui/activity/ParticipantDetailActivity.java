@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,11 +43,11 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     @BindView(R.id.tv_email)
     TextView mEmail;
 
-    @BindView(R.id.ll_scan)
-    LinearLayout mLLScan;
+    @BindView(R.id.bt_sign)
+    Button mBtScan;
 
-    @BindView(R.id.ll_scaned)
-    LinearLayout mLLScaned;
+    @BindView(R.id.bt_signed)
+    Button mBtScaned;
 
     @Inject
     ParticipantPresenterImpl mParticipantPresenterImpl;
@@ -59,14 +60,13 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
 
     private int status = 5;
 
-    @OnClick({R.id.rl_back,R.id.ll_scan})
+    @OnClick({R.id.rl_back,R.id.bt_sign})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.rl_back:
                 finish();
                 break;
-            case R.id.ll_scan:
-                startActivity(new Intent(this,OffLineSignListActivity.class));
+            case R.id.bt_sign:
                 break;
 
         }
@@ -94,11 +94,11 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
         status = intent.getIntExtra("status",5);
 
         if(status == 5){
-            mLLScan.setVisibility(View.GONE);
-            mLLScaned.setVisibility(View.VISIBLE);
+            mBtScan.setVisibility(View.GONE);
+            mBtScaned.setVisibility(View.VISIBLE);
         }else{
-            mLLScan.setVisibility(View.VISIBLE);
-            mLLScaned.setVisibility(View.GONE);
+            mBtScan.setVisibility(View.VISIBLE);
+            mBtScaned.setVisibility(View.GONE);
         }
         mParticipantPresenterImpl.attachView(this);
         mParticipantPresenterImpl.beforeRequest();

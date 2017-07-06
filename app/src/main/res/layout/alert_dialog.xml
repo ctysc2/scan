@@ -70,7 +70,7 @@
                     android:layout_centerInParent="true"
                     android:textSize="14sp"
 
-                    android:textColor="@color/color_dialog_confirm"/>
+                    android:textColor="@color/color_text_bolue"/>
             </RelativeLayout>
 
         </RelativeLayout>

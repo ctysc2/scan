@@ -104,50 +104,30 @@
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
-    <LinearLayout
-        android:id="@+id/ll_scan"
-        android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:background="@drawable/layout_scan_bac"
-        >
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/icon_sign"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
+        <Button
+            android:id="@+id/bt_sign"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
             android:text="签到"
-            android:gravity="center"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/color_dialog_cancle"/>
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/ll_scaned"
-        android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="@drawable/layout_scan_bac"
-        >
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/icon_signed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="16sp"
+            android:textColor="@color/color_text_white"
+            android:background="@drawable/shape_sign_bac"
+            android:layout_height="50dp" />
+        <Button
+            android:id="@+id/bt_signed"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:text="已签到"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/color_text_bolue"/>
+            android:enabled="false"
+            android:textSize="16sp"
+            android:textColor="@color/color_text_white"
+            android:background="@drawable/shape_signed_bac"
+            android:layout_marginBottom="15dp"
+            android:layout_height="50dp" />
 
-    </LinearLayout>
 </RelativeLayout>

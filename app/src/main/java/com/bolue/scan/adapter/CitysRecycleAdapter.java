@@ -59,7 +59,7 @@ public class CitysRecycleAdapter extends RecyclerView.Adapter<CitysRecycleAdapte
         LabelEntity.DataEntity.City data = dataSource.get(position);
         holder.text.setText(data.getCity_name());
         if(data.isSelected()){
-            holder.text.setTextColor(Color.parseColor("#2196F3"));
+            holder.text.setTextColor(Color.parseColor("#21B7C4"));
         }else{
             holder.text.setTextColor(Color.parseColor("#333333"));
         }

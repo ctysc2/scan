@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 
 import com.bolue.scan.di.component.ApplicationComponent;
@@ -13,6 +14,7 @@ import com.bolue.scan.greendao.gen.DaoMaster;
 import com.bolue.scan.greendao.gen.DaoSession;
 import com.bolue.scan.greendaohelper.MyOpenHelper;
 import com.bolue.scan.utils.CrashHandler;
+import com.bolue.scan.utils.PhoneUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -47,6 +49,7 @@ public class App extends MultiDexApplication {
             Fresco.initialize(this, config);
             setDataBase();
 
+
         }
     }
     private void initApplicationComponent() {
@@ -77,6 +80,7 @@ public class App extends MultiDexApplication {
     public SQLiteDatabase getDb() {
         return db;
     }
+
     private static String getCurProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -87,4 +91,6 @@ public class App extends MultiDexApplication {
         }
         return null;
     }
+
+
 }
