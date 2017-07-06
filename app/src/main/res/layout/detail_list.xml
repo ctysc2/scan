@@ -29,13 +29,13 @@
             android:gravity="center_vertical"
             android:textSize="15sp"
             android:text="黄亚星"
-            android:textColor="@color/black"/>
+            android:textColor="@color/color_text_black"/>
         <TextView
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="15sp"
-            android:textColor="#000000"
+            android:textColor="@color/color_text_black"
             android:gravity="center"
             android:text="待参会"
             android:layout_alignParentRight="true"/>

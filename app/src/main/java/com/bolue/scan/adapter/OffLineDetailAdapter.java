@@ -79,7 +79,7 @@ public class OffLineDetailAdapter extends BaseRecyclerAdapter<OffLineDetailAdapt
 
         if(data.getStatus() == 5){
             holder.mStatus.setText("已参会");
-            holder.mStatus.setTextColor(Color.parseColor("#F15114"));
+            holder.mStatus.setTextColor(Color.parseColor("#EA9333"));
         }else{
             holder.mStatus.setText("待参会");
             holder.mStatus.setTextColor(Color.parseColor("#769AA2"));

@@ -58,7 +58,7 @@
                 android:textSize="15sp"
                 android:gravity="center"
                 android:background="@drawable/layout_bac"
-                android:textColor="@color/bolue_color"/>
+                android:textColor="@color/color_text_bolue"/>
         </LinearLayout>
     </LinearLayout>
 
