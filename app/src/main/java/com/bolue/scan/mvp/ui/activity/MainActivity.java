@@ -39,8 +39,10 @@ import com.andview.refreshview.XRefreshView;
 import com.andview.refreshview.utils.LogUtils;
 import com.bolue.scan.R;
 import com.bolue.scan.adapter.NormalRecyclerAdapter;
+import com.bolue.scan.application.App;
 import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.listener.OnItemClickListener;
+import com.bolue.scan.listener.ReLoginEvent;
 import com.bolue.scan.mvp.entity.CalendarEntity;
 import com.bolue.scan.mvp.entity.LabelEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
@@ -53,6 +55,7 @@ import com.bolue.scan.mvp.view.ReserveView;
 import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
 import com.bolue.scan.utils.PreferenceUtils;
+import com.bolue.scan.utils.RxBus;
 import com.bolue.scan.utils.TransformUtils;
 import com.bolue.scan.widget.CityPopUpWindow;
 import com.bolue.scan.zxing.activity.CaptureActivity;
@@ -242,7 +245,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
 
         menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.RIGHT);
+        menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
         menu.setFadeDegree(0.35f);
         menu.setOffsetFadeDegree(0.2f);
@@ -255,16 +258,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         mLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this,"退出登录",Toast.LENGTH_SHORT).show();
-
-                PreferenceUtils.setPrefString(MainActivity.this,"userName","");
-                PreferenceUtils.setPrefString(MainActivity.this,"passWord","");
-                PreferenceUtils.setPrefString(MainActivity.this,"openid","");
-                PreferenceUtils.setPrefString(MainActivity.this,"code","");
-
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                doLogOut();
             }
         });
         mLLOffLine = (LinearLayout)findViewById(R.id.ll_offline);
@@ -277,6 +271,53 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         mTvName = (TextView)findViewById(R.id.tv_name);
         mTvName.setText(PreferenceUtils.getPrefString(this,"userName",""));
 
+        mSubscription = RxBus.getInstance().toObservable(ReLoginEvent.class)
+                .subscribe(new Action1<ReLoginEvent>() {
+                    @Override
+                    public void call(ReLoginEvent reLoginEvent) {
+
+                        Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                                .subscribe(new Observer<Object>() {
+                                    @Override
+                                    public void onCompleted() {
+                                        if(mAlertDialog == null){
+                                            mAlertDialog = DialogUtils.create(App.getActivity());
+                                            mAlertDialog.show(new AlertDialogListener() {
+                                                @Override
+                                                public void onConFirm() {
+                                                    mAlertDialog.dismiss();
+                                                    mAlertDialog = null;
+                                                    doLogOut();
+                                                }
+
+                                                @Override
+                                                public void onCancel() {
+
+                                                }
+                                            }, "账户异常", "检测到您的账户在其他地方登录,请重新登录", "重新登录");
+
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onNext(Object data) {
+
+                                    }
+
+                                });
+
+
+
+
+
+                    }
+                });
     }
 
     private void updateRecycleView(CalendarBean bean){
@@ -479,6 +520,8 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         if(mlocationClient != null){
             mlocationClient.onDestroy();
         }
+        if(mSubscription!=null)
+            mSubscription.unsubscribe();
         Log.i("Calendar","onDestroy");
     }
 
@@ -617,5 +660,18 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         super.onResume();
         if(!isFirstLoad && mCalendarDateView!=null)
             mCalendarDateView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void doLogOut(){
+
+        PreferenceUtils.setPrefString(MainActivity.this,"userName","");
+        PreferenceUtils.setPrefString(MainActivity.this,"passWord","");
+        PreferenceUtils.setPrefString(MainActivity.this,"openid","");
+        PreferenceUtils.setPrefString(MainActivity.this,"code","");
+
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
     }
 }

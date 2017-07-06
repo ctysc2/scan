@@ -1,11 +1,13 @@
 package com.bolue.scan.mvp.interactor.impl;
 
 import com.bolue.scan.common.HostType;
+import com.bolue.scan.listener.ReLoginEvent;
 import com.bolue.scan.listener.RequestCallBack;
 import com.bolue.scan.mvp.entity.CalendarEntity;
 import com.bolue.scan.mvp.entity.IndexEntity;
 import com.bolue.scan.mvp.interactor.ReserveInteractor;
 import com.bolue.scan.repository.network.RetrofitManager;
+import com.bolue.scan.utils.RxBus;
 import com.bolue.scan.utils.TransformUtils;
 
 import javax.inject.Inject;
@@ -42,6 +44,8 @@ public class ReserveInteractorImpl implements ReserveInteractor<CalendarEntity>{
                     @Override
                     public void onNext(CalendarEntity data) {
                         if(data!=null ){
+                            if(data.getUser() != null && data.getUser().isLogined() == false)
+                                RxBus.getInstance().post(new ReLoginEvent());
                             callback.success(data);
                         }
                     }

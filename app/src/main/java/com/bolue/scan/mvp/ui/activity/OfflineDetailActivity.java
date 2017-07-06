@@ -240,6 +240,11 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

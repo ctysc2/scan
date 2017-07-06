@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -85,7 +87,22 @@ public class LoginActivity extends BaseActivity implements LoginView{
 
     private ViewTreeObserver.OnGlobalLayoutListener listener;
 
+    private TextWatcher mWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            onTextInputChanged();
+        }
+    };
     @OnClick({R.id.bt_login,R.id.iv_clear_user,R.id.iv_clear_password,R.id.iv_show_password})
     public void onClick(View v){
 
@@ -181,8 +198,20 @@ public class LoginActivity extends BaseActivity implements LoginView{
         mLoginPresenterImpl.attachView(this);
         mEdUser.setText("15221621139");
         mEdPassword.setText("19960815dd");
+
+        mEdUser.addTextChangedListener(mWatcher);
+        mEdPassword.addTextChangedListener(mWatcher);
+        onTextInputChanged();
     }
 
+    private void onTextInputChanged(){
+
+        if(mEdUser.getText().toString().equals("") || mEdPassword.getText().toString().equals("")){
+            mLogin.setEnabled(false);
+        }else{
+            mLogin.setEnabled(true);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

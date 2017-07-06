@@ -98,7 +98,7 @@ public class CityPopUpWindow extends PopupWindow{
                 backGroundFloatOff();
             }
         });
-        showAsDropDown(mView, 0, 0);
+        showAsDropDown(mView, mView.getWidth()+(int) DimenUtil.dp2px(17)-(int) DimenUtil.dp2px(80), 0);
 
 
         initRecycleView();

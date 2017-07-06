@@ -26,15 +26,15 @@ public class BaseEntity {
 
 
     
-    class User{
-        private boolean isLogined;
+    public  static class User{
+        private boolean is_logined;
 
         public void setLogined(boolean logined) {
-            isLogined = logined;
+            is_logined = logined;
         }
 
         public boolean isLogined() {
-            return isLogined;
+            return is_logined;
         }
     }
 }

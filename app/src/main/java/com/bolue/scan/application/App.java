@@ -1,8 +1,10 @@
 package com.bolue.scan.application;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -31,6 +33,7 @@ public class App extends MultiDexApplication {
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
     private MyOpenHelper mHelper;
+    private static Activity sActivity;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,9 +51,53 @@ public class App extends MultiDexApplication {
                     .build();
             Fresco.initialize(this, config);
             setDataBase();
-
+            registerActivitys();
 
         }
+    }
+
+    private void registerActivitys() {
+        this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                Log.d("YWK",activity+"onActivityCreated");
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                Log.d("YWK",activity+"onActivityStarted");
+                sActivity=activity;
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
+    }
+    public static Activity getActivity(){
+        return sActivity;
     }
     private void initApplicationComponent() {
         mApplicationComponent = DaggerApplicationComponent.builder()

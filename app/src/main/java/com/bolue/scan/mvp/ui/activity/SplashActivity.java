@@ -71,7 +71,9 @@ public class SplashActivity extends BaseActivity implements AlertDialogListener{
         String imei = PhoneUtils.getIMEI(this);
         String phone = PhoneUtils.getPhoneNumber(this);
 
-        Log.i("deviceinfo","imei:"+imei+" phone:"+phone);
+        PreferenceUtils.setPrefString(this,"phone",phone);
+        PreferenceUtils.setPrefString(this,"imei",imei);
+
     }
 
     @Override

@@ -122,6 +122,8 @@ public class RetrofitManager {
             Response originalResponse;
             String openid = PreferenceUtils.getPrefString(App.getAppContext(),"openid","");
             String code = PreferenceUtils.getPrefString(App.getAppContext(),"code","");
+            String phone = PreferenceUtils.getPrefString(App.getAppContext(),"phone","");
+            String imei = PreferenceUtils.getPrefString(App.getAppContext(),"imei","");
 
 //            String openid = "c2cacc74-09ef-11e7-bc9a-288023a21480";
 //            String code = "2e43f338a0bcbbf024ac44d4fbb30670";
@@ -129,6 +131,9 @@ public class RetrofitManager {
             request = request.newBuilder()
                     .header("bolueClient", "android")
                     .header("MyAuth", new Gson().toJson(new HeaderEntity(openid, code)))
+                    .header("systemType","9")
+                    .header("phone",phone)
+                    .header("imei",imei)
                     .build();
 
             //添加公共参数yyyTS
