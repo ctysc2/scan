@@ -22,9 +22,11 @@ import com.bolue.scan.greendao.entity.OffLineLessons;
 import com.bolue.scan.greendao.entity.Participant;
 import com.bolue.scan.greendaohelper.OffLineLessonsHelper;
 import com.bolue.scan.greendaohelper.ParticipantHelper;
+import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineSignedEntity;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
+import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
 import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -113,14 +115,41 @@ public class OffLineSignListActivity extends BaseActivity {
                 mAdapter.notifyDataSetChanged();
                 break;
             case R.id.tv_delete:
+
+                boolean hasUnUploaded = false;
+
                 for(int i = dataSource.size()-1;i>=0;i--){
                     if(dataSource.get(i).isSelected() == true){
-                        dataSource.remove(i);
+
+                        if(dataSource.get(i).isUploaded()){
+                            OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(i).getId());
+                            ParticipantHelper.getInstance().deleteAll(dataSource.get(i).getId());
+                            dataSource.remove(i);
+
+                        }else{
+                            hasUnUploaded = true;
+                        }
+
                     }
                 }
                 updateSelectNum();
                 checkAndExitEdit();
                 mAdapter.notifyDataSetChanged();
+
+                if(hasUnUploaded){
+                    mAlertDialog = DialogUtils.create(this);
+                    mAlertDialog.show(new AlertDialogListener() {
+                        @Override
+                        public void onConFirm() {
+                            mAlertDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            mAlertDialog.dismiss();
+                        }
+                    },"未删除通知","未上传的线下课没有批量删除,请确认后单个删除","知道了");
+                }
 
 
         }
@@ -205,25 +234,6 @@ public class OffLineSignListActivity extends BaseActivity {
     @Override
     public void initViews() {
 
-        //从数据库读取数据
-        List<OffLineLessons> lessons = OffLineLessonsHelper.getInstance().getAll();
-
-        if(lessons != null){
-            dataSource = new ArrayList<>();
-            for (OffLineLessons lesson:lessons
-                 ) {
-                OffLineSignedEntity entity = new OffLineSignedEntity();
-                entity.setId(lesson.getId().intValue());
-                entity.setStatus(lesson.getStatus());
-                entity.setTitle(lesson.getTitle());
-                entity.setSelected(false);
-                entity.setBrief_image(lesson.getBrief_image());
-                entity.setJoin_num(lesson.getJoin_num());
-                dataSource.add(entity);
-            }
-
-
-        }
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new OfflineSignListAdapter(dataSource,this);
@@ -247,14 +257,48 @@ public class OffLineSignListActivity extends BaseActivity {
         });
         mAdapter.setOnDeleteClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
-                OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(position).getId());
-                ParticipantHelper.getInstance().deleteAll(dataSource.get(position).getId());
-                mAdapter.delete(position);
-                updateSelectNum();
+            public void onItemClick(final int position) {
 
-                if(mAdapter.isEdit())
-                    checkAndExitEdit();
+                if(dataSource.get(position).isUploaded() == false){
+
+                    mAlertDialog = DialogUtils.create(OffLineSignListActivity.this);
+                    mAlertDialog.show(new AlertDialogListener() {
+                        @Override
+                        public void onConFirm() {
+                            OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(position).getId());
+                            ParticipantHelper.getInstance().deleteAll(dataSource.get(position).getId());
+                            mAdapter.delete(position);
+                            updateSelectNum();
+
+                            if(mAdapter.isEdit())
+                                checkAndExitEdit();
+
+                            mAlertDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                            mAlertDialog.dismiss();
+
+                        }
+                    },"删除离线数据","该线下课签到的数据还未上传,您确定要删除吗？删除后可能会造成数据丢失");
+
+                }else{
+                    OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(position).getId());
+                    ParticipantHelper.getInstance().deleteAll(dataSource.get(position).getId());
+                    mAdapter.delete(position);
+                    updateSelectNum();
+
+                    if(mAdapter.isEdit())
+                        checkAndExitEdit();
+
+                }
+
+
+
+
+
             }
         });
         recyclerView.setHasFixedSize(true);
@@ -269,6 +313,36 @@ public class OffLineSignListActivity extends BaseActivity {
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDataFromDb();
+    }
+
+    private void getDataFromDb() {
+
+        //从数据库读取数据
+        List<OffLineLessons> lessons = OffLineLessonsHelper.getInstance().getAll();
+
+        if(lessons != null){
+            dataSource = new ArrayList<>();
+            for (OffLineLessons lesson:lessons
+                    ) {
+                OffLineSignedEntity entity = new OffLineSignedEntity();
+                entity.setId(lesson.getId().intValue());
+                entity.setStatus(lesson.getStatus());
+                entity.setTitle(lesson.getTitle());
+                entity.setSelected(false);
+                entity.setBrief_image(lesson.getBrief_image());
+                entity.setJoin_num(lesson.getJoin_num());
+                dataSource.add(entity);
+            }
+
+            mAdapter.setData(dataSource,false);
+
+        }
     }
 
     @Override

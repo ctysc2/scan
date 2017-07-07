@@ -96,10 +96,10 @@ public class OfflineSignListAdapter extends RecyclerView.Adapter<OfflineSignList
 
         if( signList == null || signList.size() == 0){
             holder.mFloat.setVisibility(View.VISIBLE);
-            list.get(position).setUploaded(false);
+            list.get(position).setUploaded(true);
         }else{
             holder.mFloat.setVisibility(View.GONE);
-            list.get(position).setUploaded(true);
+            list.get(position).setUploaded(false);
         }
         if(this.isEdit == true){
             holder.mCheckBox.setVisibility(View.VISIBLE);

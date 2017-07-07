@@ -255,6 +255,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                     @Override
                     public void onConFirm() {
                         isWillUpdated = true;
+                        mOffLineDetailPresenterImpl.beforeRequest();
                         mOffLineDetailPresenterImpl.getOffLineDetail(id);
                         mAlertDialog.dismiss();
                     }
@@ -289,6 +290,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                     @Override
                     public void onConFirm() {
                         isWillUpdated = true;
+                        mOffLineDetailPresenterImpl.beforeRequest();
                         mOffLineDetailPresenterImpl.getOffLineDetail(id);
                         mAlertDialog.dismiss();
                     }
@@ -459,7 +461,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
                     ParticipantHelper.getInstance().insertParticipantlist(parts,id);
 
-                    if(isWillUpdated)
+                    if(isWillUpdated && isOnlineMode)
                         Toast.makeText(this,"下载成功,可切换至离线模式下查看~",Toast.LENGTH_SHORT).show();
 
                 }
