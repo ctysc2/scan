@@ -49,6 +49,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     @BindView(R.id.bt_signed)
     Button mBtScaned;
 
+
     @Inject
     ParticipantPresenterImpl mParticipantPresenterImpl;
 
@@ -60,6 +61,10 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
 
     private int status = 5;
 
+    private boolean isOnlineMode = false;
+
+    private String checkCode = "";
+
     @OnClick({R.id.rl_back,R.id.bt_sign})
     public void onClick(View v){
         switch (v.getId()){
@@ -67,6 +72,13 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
                 finish();
                 break;
             case R.id.bt_sign:
+
+                if(isOnlineMode){
+
+                }else{
+
+                }
+
                 break;
 
         }
@@ -85,13 +97,21 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
 
     @Override
     public void initViews() {
-        mTitle.setText("参会人员信息");
         Intent intent = getIntent();
 
         id = intent.getIntExtra("user_id",-1);
         isInvited = intent.getBooleanExtra("is_invited",false);
         resource_id = intent.getIntExtra("resource_id",-1);
         status = intent.getIntExtra("status",5);
+        isOnlineMode = intent.getBooleanExtra("isOnlineMode",true);
+        checkCode = intent.getStringExtra("checkCode");
+
+        if(!isOnlineMode){
+            mTitle.setText("参会人员信息(离线)");
+        }else{
+            mTitle.setText("参会人员信息");
+        }
+
 
         if(status == 5){
             mBtScan.setVisibility(View.GONE);

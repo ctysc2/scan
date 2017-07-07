@@ -24,9 +24,13 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Key = new Property(0, Long.class, "key", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property UserId = new Property(2, String.class, "userId", false, "USER_ID");
+        public final static Property LessonId = new Property(2, int.class, "lessonId", false, "LESSON_ID");
+        public final static Property UserId = new Property(3, int.class, "userId", false, "USER_ID");
+        public final static Property CheckCode = new Property(4, String.class, "checkCode", false, "CHECK_CODE");
+        public final static Property Account = new Property(5, String.class, "account", false, "ACCOUNT");
+        public final static Property Status = new Property(6, int.class, "status", false, "STATUS");
     }
 
 
@@ -42,9 +46,13 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PARTICIPANT\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY ," + // 0: key
                 "\"NAME\" TEXT," + // 1: name
-                "\"USER_ID\" TEXT);"); // 2: userId
+                "\"LESSON_ID\" INTEGER NOT NULL ," + // 2: lessonId
+                "\"USER_ID\" INTEGER NOT NULL ," + // 3: userId
+                "\"CHECK_CODE\" TEXT," + // 4: checkCode
+                "\"ACCOUNT\" TEXT," + // 5: account
+                "\"STATUS\" INTEGER NOT NULL );"); // 6: status
     }
 
     /** Drops the underlying database table. */
@@ -57,40 +65,56 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
     protected final void bindValues(DatabaseStatement stmt, Participant entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
+        Long key = entity.getKey();
+        if (key != null) {
+            stmt.bindLong(1, key);
         }
  
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(2, name);
         }
+        stmt.bindLong(3, entity.getLessonId());
+        stmt.bindLong(4, entity.getUserId());
  
-        String userId = entity.getUserId();
-        if (userId != null) {
-            stmt.bindString(3, userId);
+        String checkCode = entity.getCheckCode();
+        if (checkCode != null) {
+            stmt.bindString(5, checkCode);
         }
+ 
+        String account = entity.getAccount();
+        if (account != null) {
+            stmt.bindString(6, account);
+        }
+        stmt.bindLong(7, entity.getStatus());
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, Participant entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
+        Long key = entity.getKey();
+        if (key != null) {
+            stmt.bindLong(1, key);
         }
  
         String name = entity.getName();
         if (name != null) {
             stmt.bindString(2, name);
         }
+        stmt.bindLong(3, entity.getLessonId());
+        stmt.bindLong(4, entity.getUserId());
  
-        String userId = entity.getUserId();
-        if (userId != null) {
-            stmt.bindString(3, userId);
+        String checkCode = entity.getCheckCode();
+        if (checkCode != null) {
+            stmt.bindString(5, checkCode);
         }
+ 
+        String account = entity.getAccount();
+        if (account != null) {
+            stmt.bindString(6, account);
+        }
+        stmt.bindLong(7, entity.getStatus());
     }
 
     @Override
@@ -101,30 +125,38 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
     @Override
     public Participant readEntity(Cursor cursor, int offset) {
         Participant entity = new Participant( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // key
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // userId
+            cursor.getInt(offset + 2), // lessonId
+            cursor.getInt(offset + 3), // userId
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // checkCode
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // account
+            cursor.getInt(offset + 6) // status
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, Participant entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setKey(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setUserId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setLessonId(cursor.getInt(offset + 2));
+        entity.setUserId(cursor.getInt(offset + 3));
+        entity.setCheckCode(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setAccount(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setStatus(cursor.getInt(offset + 6));
      }
     
     @Override
     protected final Long updateKeyAfterInsert(Participant entity, long rowId) {
-        entity.setId(rowId);
+        entity.setKey(rowId);
         return rowId;
     }
     
     @Override
     public Long getKey(Participant entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getKey();
         } else {
             return null;
         }
@@ -132,7 +164,7 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
 
     @Override
     public boolean hasKey(Participant entity) {
-        return entity.getId() != null;
+        return entity.getKey() != null;
     }
 
     @Override

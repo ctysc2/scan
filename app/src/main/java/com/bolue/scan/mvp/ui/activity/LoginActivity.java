@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +75,14 @@ public class LoginActivity extends BaseActivity implements LoginView{
     @BindView(R.id.tv_err)
     TextView mTvErr;
 
+
+    @BindView(R.id.iv_clear_user)
+    ImageView mClearUser;
+
+    @BindView(R.id.ll_password_right)
+    RelativeLayout mPassWordRight;
+
+
     @Inject
     LoginPresenterImpl mLoginPresenterImpl;
 
@@ -87,6 +96,7 @@ public class LoginActivity extends BaseActivity implements LoginView{
 
     private ViewTreeObserver.OnGlobalLayoutListener listener;
 
+
     private TextWatcher mWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -95,12 +105,12 @@ public class LoginActivity extends BaseActivity implements LoginView{
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            onTextInputChanged();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            onTextInputChanged();
+
         }
     };
     @OnClick({R.id.bt_login,R.id.iv_clear_user,R.id.iv_clear_password,R.id.iv_show_password})
@@ -196,9 +206,8 @@ public class LoginActivity extends BaseActivity implements LoginView{
     public void initViews() {
         mTvErr.setText("");
         mLoginPresenterImpl.attachView(this);
-        mEdUser.setText("15221621139");
-        mEdPassword.setText("19960815dd");
-
+//        mEdUser.setText("15221621139");
+//        mEdPassword.setText("19960815dd");
         mEdUser.addTextChangedListener(mWatcher);
         mEdPassword.addTextChangedListener(mWatcher);
         onTextInputChanged();
@@ -206,10 +215,25 @@ public class LoginActivity extends BaseActivity implements LoginView{
 
     private void onTextInputChanged(){
 
-        if(mEdUser.getText().toString().equals("") || mEdPassword.getText().toString().equals("")){
+        mClearUser.setVisibility(View.VISIBLE);
+        mPassWordRight.setVisibility(View.VISIBLE);
+
+
+        if(mEdUser.getText().toString().equals("")||mEdPassword.getText().toString().equals("")){
             mLogin.setEnabled(false);
-        }else{
+
+            if(mEdUser.getText().toString().equals("")){
+                mClearUser.setVisibility(View.GONE);
+            }
+
+            if(mEdPassword.getText().toString().equals("")){
+                mPassWordRight.setVisibility(View.GONE);
+            }
+
+        } else{
+
             mLogin.setEnabled(true);
+
         }
     }
     @Override

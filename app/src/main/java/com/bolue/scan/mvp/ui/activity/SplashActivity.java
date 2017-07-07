@@ -43,7 +43,9 @@ public class SplashActivity extends BaseActivity implements AlertDialogListener{
         rxPermissions = new RxPermissions(this);
         rxPermissions
                 .request(
-                        Manifest.permission.READ_PHONE_STATE)
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean grant) {

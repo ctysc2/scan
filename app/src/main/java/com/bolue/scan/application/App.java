@@ -119,7 +119,10 @@ public class App extends MultiDexApplication {
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
     }
+    public static App getInstances(){
 
+        return sAppContext;
+    }
     public DaoSession getDaoSession() {
         return mDaoSession;
     }

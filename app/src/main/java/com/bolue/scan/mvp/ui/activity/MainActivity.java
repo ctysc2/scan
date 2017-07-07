@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     private boolean isFirstLoad = true;
 
-    private boolean isShiftCity = false;
+    private boolean isNeedUpdate = false;
 
     private AMapLocationClientOption mLocationOption = null;
 
@@ -342,6 +342,8 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 Intent intent = new Intent(MainActivity.this,OfflineDetailActivity.class);
                 intent.putExtra("id",dataSource.get(position).getId());
                 intent.putExtra("isOnlineMode",true);
+                intent.putExtra("status",dataSource.get(position).getStatus());
+                intent.putExtra("join_num",dataSource.get(position).getJoin_num());
                 startActivity(intent);
 
 
@@ -486,10 +488,10 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
                 }
 
-                if(isShiftCity && year == bean.year && month == bean.moth && day == bean.day ){
+                if(isNeedUpdate && year == bean.year && month == bean.moth && day == bean.day ){
 
                     updateRecycleView(bean);
-                    isShiftCity = false;
+                    isNeedUpdate = false;
 
                 }
 
@@ -610,7 +612,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 mCityList.get(position).setSelected(true);
                 mStation.setText(mCityList.get(position).getCity_name());
                 mCity_id = mCityList.get(position).getCity_id();
-                isShiftCity = true;
+                isNeedUpdate = true;
                 mCalendarLayout.reCheckIsOpen();
                 Log.i("Calendar","notifyDataSetChanged");
                 mCalendarDateView.getAdapter().notifyDataSetChanged();
@@ -658,8 +660,11 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     @Override
     protected void onResume() {
         super.onResume();
-        if(!isFirstLoad && mCalendarDateView!=null)
+        if(!isFirstLoad && mCalendarDateView!=null){
+            isNeedUpdate = true;
             mCalendarDateView.getAdapter().notifyDataSetChanged();
+        }
+
     }
 
     private void doLogOut(){

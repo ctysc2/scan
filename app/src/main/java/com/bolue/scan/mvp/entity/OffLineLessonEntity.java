@@ -128,6 +128,15 @@ public class OffLineLessonEntity extends BaseEntity{
             boolean is_invited;
             int invitee_id;
             int user_id;
+            String checkcode;
+
+            public void setCheckcode(String checkcode) {
+                this.checkcode = checkcode;
+            }
+
+            public String getCheckcode() {
+                return checkcode;
+            }
 
             public String getName() {
                 return name;

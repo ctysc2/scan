@@ -21,6 +21,13 @@ import com.andview.refreshview.XRefreshViewFooter;
 import com.andview.refreshview.XRefreshViewHeader;
 import com.bolue.scan.R;
 import com.bolue.scan.adapter.OffLineDetailAdapter;
+import com.bolue.scan.greendao.entity.OffLineLessons;
+import com.bolue.scan.greendao.entity.Participant;
+import com.bolue.scan.greendao.entity.Sign;
+import com.bolue.scan.greendaohelper.OffLineLessonsHelper;
+import com.bolue.scan.greendaohelper.ParticipantHelper;
+import com.bolue.scan.greendaohelper.SignHelper;
+import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.mvp.presenter.impl.OffLineDetailPresenterImpl;
@@ -33,6 +40,7 @@ import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -67,6 +75,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     @BindView(R.id.ll_download_online)
     LinearLayout getmLLDownloadOnline;
 
+    @BindView(R.id.tv_toolbar_title)
+    TextView mToolTitle;
 
 
     private TextView mTitle;
@@ -99,7 +109,17 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
     private boolean isOnlineMode = true;
 
+    private int status;
+
+    private String join_num;
+
     private View headerView;
+
+    private boolean isWillUpdated = false;
+
+    private OffLineLessons lesson;
+
+    private List<Participant> parts;
 
     @Override
     public int getLayoutId() {
@@ -116,19 +136,17 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         id = getIntent().getIntExtra("id",-1);
         isOnlineMode = getIntent().getBooleanExtra("isOnlineMode",true);
 
-        if(isOnlineMode){
-            mLLDownload.setVisibility(View.GONE);
-            mLLUpLoad.setVisibility(View.GONE);
+        if(!isOnlineMode){
+            mToolTitle.setText("签到详情(离线)");
         }else{
-            getmLLDownloadOnline.setVisibility(View.GONE);
+            mToolTitle.setText("签到详情");
         }
+        status = getIntent().getIntExtra("status",0);
+        join_num = getIntent().getStringExtra("join_num");
+
 
         rxPermissions = new RxPermissions(this);
         mOffLineDetailPresenterImpl.attachView(this);
-        if(id != -1){
-            mOffLineDetailPresenterImpl.beforeRequest();
-            mOffLineDetailPresenterImpl.getOffLineDetail(id);
-        }
 
 
         xRefreshView.setPullLoadEnable(true);
@@ -144,6 +162,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 intent.putExtra("is_invited",member.is_invited());
                 intent.putExtra("resource_id",id);
                 intent.putExtra("status",member.getStatus());
+                intent.putExtra("isOnlineMode",isOnlineMode);
+                intent.putExtra("checkCode",member.getCheckcode());
                 startActivity(intent);
 
             }
@@ -180,7 +200,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
             @Override
             public void onRefresh(boolean isPullDown) {
-                mOffLineDetailPresenterImpl.getOffLineDetail(id);
+                setOriginDatas();
             }
 
             @Override
@@ -230,19 +250,116 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                         });
                 break;
             case R.id.ll_download:
+                mAlertDialog =  DialogUtils.create(this);
+                mAlertDialog.show(new AlertDialogListener() {
+                    @Override
+                    public void onConFirm() {
+                        isWillUpdated = true;
+                        mOffLineDetailPresenterImpl.getOffLineDetail(id);
+                        mAlertDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        mAlertDialog.dismiss();
+                    }
+                },"更新参会数据","该线下课的参会数据有更新,按确定更新");
                 break;
             case R.id.ll_upload:
+
+                 List<Sign> list = SignHelper.getInstance().getSignList(id);
+
+                if(list == null || list.size() == 0){
+                    Toast.makeText(this,"没有需要上传的数据",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.ll_download_online:
+                mAlertDialog =  DialogUtils.create(this);
+                String title;
+                String content;
+                if(OffLineLessonsHelper.getInstance().getLessonById(id)  == null){
+                    title = "下载参会数据";
+                    content = "如果您使用离线模式，请按确定下载该线下课的参会数据。";
+                }else{
+                    title = "更新参会数据";
+                    content = "该线下课的参会数据有更新,按确定更新";
+                }
+
+                mAlertDialog.show(new AlertDialogListener() {
+                    @Override
+                    public void onConFirm() {
+                        isWillUpdated = true;
+                        mOffLineDetailPresenterImpl.getOffLineDetail(id);
+                        mAlertDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        mAlertDialog.dismiss();
+                    }
+                },title,content);
                 break;
 
         }
 
     }
 
+    private void setOriginDatas(){
+        if(isOnlineMode){
+            mLLDownload.setVisibility(View.GONE);
+            mLLUpLoad.setVisibility(View.GONE);
+            //在线模式下从服务器更新数据
+            if(id != -1){
+                //mOffLineDetailPresenterImpl.beforeRequest();
+                mOffLineDetailPresenterImpl.getOffLineDetail(id);
+            }
+        }else{
+            getmLLDownloadOnline.setVisibility(View.GONE);
+            //离线模式下从数据库获取数据
+            lesson = OffLineLessonsHelper.getInstance().getLessonById(id);
+
+            //离线模式直接更新
+            if(lesson != null){
+                mTitle.setText(lesson.getTitle());
+                mLocation.setText(lesson.getSite());
+                mDate.setText(DateTransformUtil.transFormDate(lesson.getStart_time(),lesson.getEnd_time()));
+                mParticipantNum.setText("("+lesson.getEnroll_count()+")");
+                longitude = lesson.getLongitude();
+                latitude = lesson.getLatitude();
+                name = lesson.getSite();
+            }
+
+            parts = ParticipantHelper.getInstance().getParticipantList(id);
+
+            if(parts != null){
+
+                dataSource = new ArrayList<>();
+
+                for(int i = 0;i<parts.size();i++){
+
+                    Participant part = parts.get(i);
+
+                    OffLineLessonEntity.DataEntity.Member member = new OffLineLessonEntity.DataEntity.Member();
+                    member.setName(part.getName());
+                    member.setCheckcode(part.getCheckCode());
+                    member.setStatus(part.getStatus());
+                    member.setUser_id(part.getUserId());
+                    dataSource.add(member);
+                }
+
+                adapter.setData(dataSource);
+                adapter.notifyDataSetChanged();
+            }
+
+            xRefreshView.stopRefresh();
+
+        }
+
+    }
     @Override
     protected void onResume() {
         super.onResume();
+        setOriginDatas();
 
     }
 
@@ -306,6 +423,47 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 adapter.setData(dataSource);
                 adapter.notifyDataSetChanged();
                 xRefreshView.stopRefresh();
+
+
+                if(isWillUpdated || OffLineLessonsHelper.getInstance().getLessonById(id) != null){
+
+                    //step1: 保存课程详情
+                    OffLineLessons lesson =
+                            new OffLineLessons();
+                    lesson.setId((long)id);
+                    lesson.setBrief_image(entity.getResult().getBrief_image());
+                    lesson.setEnd_time(entity.getResult().getEnd_time());
+                    lesson.setStart_time(entity.getResult().getStart_time());
+                    lesson.setEnroll_count(entity.getResult().getEnroll_count());
+                    lesson.setJoin_num(join_num);
+                    lesson.setLongitude(entity.getResult().getAddress().getMap_x());
+                    lesson.setLatitude(entity.getResult().getAddress().getMap_y());
+                    lesson.setSite(entity.getResult().getAddress().getSite());
+                    lesson.setTitle(entity.getResult().getTitle());
+                    lesson.setStatus(status);
+                    OffLineLessonsHelper.getInstance().insertOffLine(lesson,id);
+
+
+                    //step:2 保存参会人信息
+                    ArrayList<Participant> parts = new ArrayList<>();
+                    for(int i = 0;i<dataSource.size();i++){
+                        Participant part = new Participant();
+                        OffLineLessonEntity.DataEntity.Member member = dataSource.get(i);
+                        part.setCheckCode(member.getCheckcode());
+                        part.setLessonId(id);
+                        part.setName(member.getName());
+                        part.setUserId(member.getUser_id());
+                        part.setStatus(member.getStatus());
+                        parts.add(part);
+                    }
+
+                    ParticipantHelper.getInstance().insertParticipantlist(parts,id);
+
+                    if(isWillUpdated)
+                        Toast.makeText(this,"下载成功,可切换至离线模式下查看~",Toast.LENGTH_SHORT).show();
+
+                }
+
             }else{
                 xRefreshView.stopRefresh(false);
             }

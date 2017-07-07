@@ -18,6 +18,10 @@ import com.andview.refreshview.XRefreshView;
 import com.andview.refreshview.XRefreshViewHeader;
 import com.bolue.scan.R;
 import com.bolue.scan.adapter.OfflineSignListAdapter;
+import com.bolue.scan.greendao.entity.OffLineLessons;
+import com.bolue.scan.greendao.entity.Participant;
+import com.bolue.scan.greendaohelper.OffLineLessonsHelper;
+import com.bolue.scan.greendaohelper.ParticipantHelper;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineSignedEntity;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
@@ -27,6 +31,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -200,26 +205,25 @@ public class OffLineSignListActivity extends BaseActivity {
     @Override
     public void initViews() {
 
-        OffLineSignedEntity entity = new OffLineSignedEntity();
-        entity.setBrief_image("http://g.hiphotos.baidu.com/baike/s%3D220/sign=ef1b45b36e061d957946303a4bf50a5d/1b4c510fd9f9d72a26432c96d42a2834349bbb11.jpg");
-        entity.setJoin_num("13");
-        entity.setTitle("瓜肉");
+        //从数据库读取数据
+        List<OffLineLessons> lessons = OffLineLessonsHelper.getInstance().getAll();
 
-        OffLineSignedEntity entity2 = new OffLineSignedEntity();
-        entity2.setBrief_image("http://f.hiphotos.baidu.com/baike/s%3D220/sign=b34f01fef6246b607f0eb576dbf91a35/77094b36acaf2eddae8a16448d1001e939019327.jpg");
-        entity2.setJoin_num("10");
-        entity2.setTitle("Gio");
+        if(lessons != null){
+            dataSource = new ArrayList<>();
+            for (OffLineLessons lesson:lessons
+                 ) {
+                OffLineSignedEntity entity = new OffLineSignedEntity();
+                entity.setId(lesson.getId().intValue());
+                entity.setStatus(lesson.getStatus());
+                entity.setTitle(lesson.getTitle());
+                entity.setSelected(false);
+                entity.setBrief_image(lesson.getBrief_image());
+                entity.setJoin_num(lesson.getJoin_num());
+                dataSource.add(entity);
+            }
 
 
-        OffLineSignedEntity entity3 = new OffLineSignedEntity();
-        entity3.setBrief_image("https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2106708056,1729294802&fm=58");
-        entity3.setJoin_num("17");
-        entity3.setTitle("马丁斯");
-
-        dataSource.add(entity);
-        dataSource.add(entity2);
-        dataSource.add(entity3);
-
+        }
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new OfflineSignListAdapter(dataSource,this);
@@ -244,6 +248,8 @@ public class OffLineSignListActivity extends BaseActivity {
         mAdapter.setOnDeleteClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(position).getId());
+                ParticipantHelper.getInstance().deleteAll(dataSource.get(position).getId());
                 mAdapter.delete(position);
                 updateSelectNum();
 

@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bolue.scan.R;
+import com.bolue.scan.greendaohelper.OffLineLessonsHelper;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.utils.DimenUtil;
@@ -67,6 +69,12 @@ public class NormalRecyclerAdapter extends RecyclerView.Adapter<NormalRecyclerAd
                 mOnItemClickListener.onItemClick(position);
             }
         });
+        //数据库中与缓存数据
+        if(OffLineLessonsHelper.getInstance().getLessonById(data.getId())!=null){
+            holder.mFloat.setVisibility(View.VISIBLE);
+        }else{
+            holder.mFloat.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -109,6 +117,9 @@ public class NormalRecyclerAdapter extends RecyclerView.Adapter<NormalRecyclerAd
 
         @BindView(R.id.tv_status)
         TextView mStatus;
+
+        @BindView(R.id.rl_float)
+        RelativeLayout mFloat;
 
         public SimpleAdapterViewHolder(View itemView, boolean isItem) {
             super(itemView);

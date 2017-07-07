@@ -14,6 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bolue.scan.R;
+import com.bolue.scan.greendao.entity.Sign;
+import com.bolue.scan.greendaohelper.SignHelper;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineSignedEntity;
 import com.bolue.scan.utils.DimenUtil;
@@ -83,7 +85,6 @@ public class OfflineSignListAdapter extends RecyclerView.Adapter<OfflineSignList
 
         }
 
-
         holder.mRlDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,6 +92,15 @@ public class OfflineSignListAdapter extends RecyclerView.Adapter<OfflineSignList
             }
         });
 
+        List<Sign> signList = SignHelper.getInstance().getSignList(data.getId());
+
+        if( signList == null || signList.size() == 0){
+            holder.mFloat.setVisibility(View.VISIBLE);
+            list.get(position).setUploaded(false);
+        }else{
+            holder.mFloat.setVisibility(View.GONE);
+            list.get(position).setUploaded(true);
+        }
         if(this.isEdit == true){
             holder.mCheckBox.setVisibility(View.VISIBLE);
             holder.mLLContainer.setPadding((int)DimenUtil.dp2px(5),(int)DimenUtil.dp2px(15),(int)DimenUtil.dp2px(10),(int)DimenUtil.dp2px(10));
@@ -189,6 +199,9 @@ public class OfflineSignListAdapter extends RecyclerView.Adapter<OfflineSignList
 
         @BindView(R.id.rl_del)
         RelativeLayout mRlDel;
+
+        @BindView(R.id.rl_float)
+        RelativeLayout mFloat;
 
 
         public SimpleAdapterViewHolder(View itemView, boolean isItem) {
