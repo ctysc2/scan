@@ -110,12 +110,12 @@
             android:layout_width="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="20dp"
             android:text="签到"
             android:textSize="16sp"
             android:textColor="@color/color_text_white"
             android:background="@drawable/shape_sign_bac"
-            android:layout_height="50dp" />
+            android:layout_height="45dp" />
         <Button
             android:id="@+id/bt_signed"
             android:layout_alignParentBottom="true"
@@ -127,7 +127,7 @@
             android:textSize="16sp"
             android:textColor="@color/color_text_white"
             android:background="@drawable/shape_signed_bac"
-            android:layout_marginBottom="15dp"
-            android:layout_height="50dp" />
+            android:layout_marginBottom="20dp"
+            android:layout_height="45dp" />
 
 </RelativeLayout>

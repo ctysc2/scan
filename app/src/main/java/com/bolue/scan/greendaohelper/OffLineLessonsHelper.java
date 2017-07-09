@@ -45,7 +45,7 @@ public class OffLineLessonsHelper {
         if(origin != null){
             //存在则更新
             lesson.setKey(origin.getKey());
-            dao.update(lesson);
+            dao.insertOrReplace(lesson);
         }else{
             //不存在则插入
 

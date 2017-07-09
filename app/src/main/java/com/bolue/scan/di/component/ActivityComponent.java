@@ -13,6 +13,7 @@ import com.bolue.scan.mvp.ui.activity.OffLineSignListActivity;
 import com.bolue.scan.mvp.ui.activity.OfflineDetailActivity;
 import com.bolue.scan.mvp.ui.activity.ParticipantDetailActivity;
 import com.bolue.scan.mvp.ui.activity.SplashActivity;
+import com.bolue.scan.zxing.activity.CaptureActivity;
 
 import dagger.Component;
 
@@ -37,6 +38,8 @@ public interface ActivityComponent {
     void inject(ParticipantDetailActivity participantDetailActivity);
     void inject(LoginActivity loginActivity);
     void inject(OffLineSignListActivity offLineSignListActivity);
+    void inject(CaptureActivity captureActivity);
+
 
 
 }

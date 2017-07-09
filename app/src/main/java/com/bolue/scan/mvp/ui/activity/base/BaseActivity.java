@@ -135,4 +135,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
             e.printStackTrace();
         }
     }
+    //需要监听网络状况的Activity重写此按方法
+    public void onNetChange(int networkType){
+
+    }
 }

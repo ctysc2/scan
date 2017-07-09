@@ -16,6 +16,8 @@ import com.bolue.scan.mvp.entity.LoginEntity;
 import com.bolue.scan.mvp.entity.LoginRequestEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.mvp.entity.ParticipantEntity;
+import com.bolue.scan.mvp.entity.SignRequestEntity;
+import com.bolue.scan.mvp.entity.base.BaseEntity;
 import com.bolue.scan.utils.PreferenceUtils;
 import com.bolue.scan.utils.SystemTool;
 import com.google.gson.Gson;
@@ -253,6 +255,13 @@ public class RetrofitManager {
     public Observable<LoginEntity> doLogin(LoginRequestEntity entity){
 
         return mRWService.doLogin(entity);
+    }
+
+    //签到
+    public Observable<BaseEntity> doSign(SignRequestEntity entity){
+
+        return mRWService.doSign(entity);
+
     }
 }
 

@@ -31,19 +31,15 @@ public class SignHelper {
     }
 
     //插入单个数据
-    public void insertSign(Sign sign, int id){
+    public void insertSign(Sign sign){
         String userName = PreferenceUtils.getPrefString(App.getAppContext(),"userName","");
-        Sign origin = getSign(id,sign.getCheckCode());
+        Sign origin = getSign(sign.getId(),sign.getCheckCode());
 
         sign.setUserName(userName);
-        if(origin == null){
-            //不存在则插入
-            dao.insert(sign);
-        }else{
-            //存在则更新
-            sign.setKey(origin.getKey());
-            dao.update(sign);
 
+        //不存在则插入,已经存在的不需要更新
+        if(origin == null){
+            dao.insert(sign);
         }
 
     }

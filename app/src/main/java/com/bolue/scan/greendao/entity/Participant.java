@@ -18,9 +18,10 @@ public class Participant {
     private String checkCode;
     private String account;
     private int status;
-    @Generated(hash = 2064887704)
+    private boolean is_invited;
+    @Generated(hash = 1893541681)
     public Participant(Long key, String name, int lessonId, int userId,
-            String checkCode, String account, int status) {
+            String checkCode, String account, int status, boolean is_invited) {
         this.key = key;
         this.name = name;
         this.lessonId = lessonId;
@@ -28,6 +29,7 @@ public class Participant {
         this.checkCode = checkCode;
         this.account = account;
         this.status = status;
+        this.is_invited = is_invited;
     }
     @Generated(hash = 1200154759)
     public Participant() {
@@ -74,6 +76,13 @@ public class Participant {
     public void setStatus(int status) {
         this.status = status;
     }
+    public boolean getIs_invited() {
+        return this.is_invited;
+    }
+    public void setIs_invited(boolean is_invited) {
+        this.is_invited = is_invited;
+    }
+
 
 
 }

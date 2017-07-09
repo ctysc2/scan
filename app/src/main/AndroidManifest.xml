@@ -54,6 +54,11 @@
             android:windowSoftInputMode="adjustResize"
             />
         <activity android:name=".mvp.ui.activity.OffLineSignListActivity"></activity>
+        <receiver android:name="com.bolue.scan.mvp.ui.broadcast.NetBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

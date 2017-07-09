@@ -31,6 +31,7 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
         public final static Property CheckCode = new Property(4, String.class, "checkCode", false, "CHECK_CODE");
         public final static Property Account = new Property(5, String.class, "account", false, "ACCOUNT");
         public final static Property Status = new Property(6, int.class, "status", false, "STATUS");
+        public final static Property Is_invited = new Property(7, boolean.class, "is_invited", false, "IS_INVITED");
     }
 
 
@@ -52,7 +53,8 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
                 "\"USER_ID\" INTEGER NOT NULL ," + // 3: userId
                 "\"CHECK_CODE\" TEXT," + // 4: checkCode
                 "\"ACCOUNT\" TEXT," + // 5: account
-                "\"STATUS\" INTEGER NOT NULL );"); // 6: status
+                "\"STATUS\" INTEGER NOT NULL ," + // 6: status
+                "\"IS_INVITED\" INTEGER NOT NULL );"); // 7: is_invited
     }
 
     /** Drops the underlying database table. */
@@ -87,6 +89,7 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
             stmt.bindString(6, account);
         }
         stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(8, entity.getIs_invited() ? 1L: 0L);
     }
 
     @Override
@@ -115,6 +118,7 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
             stmt.bindString(6, account);
         }
         stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(8, entity.getIs_invited() ? 1L: 0L);
     }
 
     @Override
@@ -131,7 +135,8 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
             cursor.getInt(offset + 3), // userId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // checkCode
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // account
-            cursor.getInt(offset + 6) // status
+            cursor.getInt(offset + 6), // status
+            cursor.getShort(offset + 7) != 0 // is_invited
         );
         return entity;
     }
@@ -145,6 +150,7 @@ public class ParticipantDao extends AbstractDao<Participant, Long> {
         entity.setCheckCode(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setAccount(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setStatus(cursor.getInt(offset + 6));
+        entity.setIs_invited(cursor.getShort(offset + 7) != 0);
      }
     
     @Override

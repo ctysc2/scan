@@ -56,6 +56,7 @@ import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
 import com.bolue.scan.utils.PreferenceUtils;
 import com.bolue.scan.utils.RxBus;
+import com.bolue.scan.utils.SystemTool;
 import com.bolue.scan.utils.TransformUtils;
 import com.bolue.scan.widget.CityPopUpWindow;
 import com.bolue.scan.zxing.activity.CaptureActivity;
@@ -276,28 +277,34 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                     @Override
                     public void call(ReLoginEvent reLoginEvent) {
 
-                        Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                        Observable.timer(1000, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                                 .subscribe(new Observer<Object>() {
                                     @Override
                                     public void onCompleted() {
-                                        if(mAlertDialog == null){
-                                            mAlertDialog = DialogUtils.create(App.getActivity());
-                                            mAlertDialog.show(new AlertDialogListener() {
-                                                @Override
-                                                public void onConFirm() {
-                                                    mAlertDialog.dismiss();
-                                                    mAlertDialog = null;
-                                                    doLogOut();
-                                                }
 
-                                                @Override
-                                                public void onCancel() {
+                                        if(App.isKicked == true)
+                                            return;
 
-                                                }
-                                            }, "账户异常", "检测到您的账户在其他地方登录,请重新登录", "重新登录");
+                                        mAlertDialog = DialogUtils.create(App.getActivity());
+                                        mAlertDialog.show(new AlertDialogListener() {
+                                            @Override
+                                            public void onConFirm() {
+                                                mAlertDialog.dismiss();
+                                                mAlertDialog = null;
+                                                App.isKicked = false;
+                                                doLogOut();
+                                            }
+
+                                            @Override
+                                            public void onCancel() {
+
+                                            }
+                                        }, "账户异常", "检测到您的账户在其他地方登录,请重新登录。", "重新登录");
+
+                                        App.isKicked = true;
 
 
-                                        }
+
                                     }
 
                                     @Override
@@ -678,5 +685,50 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if(intent != null && intent.getBooleanExtra("isToOffline",false) == true){
+
+            if(mAlertDialog == null || (mAlertDialog != null && !mAlertDialog.isShowing()))
+                startActivity(new Intent(this,OffLineSignListActivity.class));
+        }
+
+    }
+
+    @Override
+    public void onNetChange(int networkType) {
+        if(networkType == SystemTool.NETWORK_NONE){
+
+
+            if(App.isKicked == false){
+
+                if(mAlertDialog != null && mAlertDialog.isShowing())
+                    mAlertDialog.dismiss();
+
+                mAlertDialog = DialogUtils.create(this);
+                mAlertDialog.show(new AlertDialogListener() {
+                    @Override
+                    public void onConFirm() {
+                        mAlertDialog.dismiss();
+                        Intent intent = new Intent(MainActivity.this,MainActivity.class);
+                        intent.putExtra("isToOffline",true);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        mAlertDialog.dismiss();
+                    }
+                },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+
+
+            }
+
+
+        }
     }
 }

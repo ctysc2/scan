@@ -10,6 +10,8 @@ import com.bolue.scan.mvp.entity.LoginEntity;
 import com.bolue.scan.mvp.entity.LoginRequestEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
 import com.bolue.scan.mvp.entity.ParticipantEntity;
+import com.bolue.scan.mvp.entity.SignRequestEntity;
+import com.bolue.scan.mvp.entity.base.BaseEntity;
 
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -62,4 +64,11 @@ public interface RWService {
     Observable<LoginEntity> doLogin(
             @Body LoginRequestEntity entity
     );
+
+    //签到
+    @POST("doSignOffline")
+    Observable<BaseEntity> doSign(
+            @Body SignRequestEntity entity
+    );
+
 }

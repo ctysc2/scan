@@ -21,6 +21,7 @@ import com.andview.refreshview.XRefreshViewFooter;
 import com.andview.refreshview.XRefreshViewHeader;
 import com.bolue.scan.R;
 import com.bolue.scan.adapter.OffLineDetailAdapter;
+import com.bolue.scan.application.App;
 import com.bolue.scan.greendao.entity.OffLineLessons;
 import com.bolue.scan.greendao.entity.Participant;
 import com.bolue.scan.greendao.entity.Sign;
@@ -30,12 +31,17 @@ import com.bolue.scan.greendaohelper.SignHelper;
 import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
+import com.bolue.scan.mvp.entity.SignRequestEntity;
+import com.bolue.scan.mvp.entity.base.BaseEntity;
 import com.bolue.scan.mvp.presenter.impl.OffLineDetailPresenterImpl;
+import com.bolue.scan.mvp.presenter.impl.SignPresenterImpl;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
+import com.bolue.scan.mvp.view.DoSignView;
 import com.bolue.scan.mvp.view.OffLineDetailView;
 import com.bolue.scan.utils.DateTransformUtil;
 import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
+import com.bolue.scan.utils.SystemTool;
 import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
@@ -49,7 +55,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class OfflineDetailActivity extends BaseActivity implements OffLineDetailView{
+public class OfflineDetailActivity extends BaseActivity implements OffLineDetailView,DoSignView {
 
     @BindView(R.id.rl_back)
     RelativeLayout mBack;
@@ -121,6 +127,9 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
     private List<Participant> parts;
 
+    @Inject
+    SignPresenterImpl mSignPresenterImpl;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_offline_detail;
@@ -146,6 +155,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
 
         rxPermissions = new RxPermissions(this);
+
+        mSignPresenterImpl.attachView(this);
         mOffLineDetailPresenterImpl.attachView(this);
 
 
@@ -233,6 +244,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     public void onClick(View v){
         switch (v.getId()){
             case R.id.rl_back:
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.ll_scan:
@@ -242,7 +254,29 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                             @Override
                             public void call(Boolean grant) {
                                 if(grant){
-                                    startActivityForResult(new Intent(OfflineDetailActivity.this,CaptureActivity.class),100);
+
+                                    if(dataSource == null || dataSource.size() == 0){
+                                        Toast.makeText(OfflineDetailActivity.this,"参会人员数据异常",Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    ArrayList<String> checkcodes = new ArrayList<String>();
+
+                                    for(int i = 0;i<dataSource.size();i++){
+                                        checkcodes.add(dataSource.get(i).getCheckcode());
+                                    }
+
+                                    if(checkcodes.size() == 0){
+                                        Toast.makeText(OfflineDetailActivity.this,"参会人员数据异常",Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    Intent intent = new Intent(OfflineDetailActivity.this,CaptureActivity.class);
+
+                                    intent.putExtra("isOnlineMode",isOnlineMode);
+                                    intent.putExtra("id",id);
+                                    intent.putStringArrayListExtra("checkcodes",checkcodes);
+
+                                    startActivity(intent);
                                 }else{
 
                                 }
@@ -264,15 +298,49 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                     public void onCancel() {
                         mAlertDialog.dismiss();
                     }
-                },"更新参会数据","该线下课的参会数据有更新,按确定更新");
+                },"更新参会数据","该线下课的参会数据有更新,按确定更新。");
                 break;
             case R.id.ll_upload:
 
-                 List<Sign> list = SignHelper.getInstance().getSignList(id);
+                final List<Sign> list = SignHelper.getInstance().getSignList(id);
 
                 if(list == null || list.size() == 0){
                     Toast.makeText(this,"没有需要上传的数据",Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                mAlertDialog =  DialogUtils.create(this);
+                mAlertDialog.show(new AlertDialogListener() {
+                    @Override
+                    public void onConFirm() {
+
+                        mAlertDialog.dismiss();
+
+                        SignRequestEntity entity = new SignRequestEntity();
+                        ArrayList<SignRequestEntity.Check> checkList = new ArrayList<>();
+                        for(int i = 0;i<list.size();i++){
+
+                            Sign sign = list.get(i);
+                            checkList.add(new SignRequestEntity.Check(sign.getCheckCode()));
+
+                        }
+
+                        entity.setSign_list(checkList);
+
+                        mSignPresenterImpl.setReqType(1);
+                        mSignPresenterImpl.beforeRequest();
+                        mSignPresenterImpl.doSign(entity);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        mAlertDialog.dismiss();
+
+                    }
+                },"上传签到数据","已离线缓存"+list.size()+"个签到信息,是否现在上传？","取消","上传");
+
+
+
                 break;
             case R.id.ll_download_online:
                 mAlertDialog =  DialogUtils.create(this);
@@ -283,7 +351,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                     content = "如果您使用离线模式，请按确定下载该线下课的参会数据。";
                 }else{
                     title = "更新参会数据";
-                    content = "该线下课的参会数据有更新,按确定更新";
+                    content = "该线下课的参会数据有更新,按确定更新。";
                 }
 
                 mAlertDialog.show(new AlertDialogListener() {
@@ -329,6 +397,10 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 longitude = lesson.getLongitude();
                 latitude = lesson.getLatitude();
                 name = lesson.getSite();
+                mPanelNum.setText("("+lesson.getEnroll_count()+")");
+
+                status = lesson.getStatus();
+                join_num = lesson.getJoin_num();
             }
 
             parts = ParticipantHelper.getInstance().getParticipantList(id);
@@ -346,6 +418,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                     member.setCheckcode(part.getCheckCode());
                     member.setStatus(part.getStatus());
                     member.setUser_id(part.getUserId());
+                    member.setIs_invited(part.getIs_invited());
                     dataSource.add(member);
                 }
 
@@ -376,20 +449,16 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 100 && resultCode == RESULT_OK && data != null){
-            Toast.makeText(OfflineDetailActivity.this,"扫描结果:"+data.getStringExtra("qr_code"),Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
+
 
     @Override
     public void showProgress(int reqType) {
         if(mLoadDialog == null){
             mLoadDialog = DialogUtils.create(this);
-            mLoadDialog.show("正在获取数据");
+            if(reqType == 1)
+                mLoadDialog.show("正在上传签到信息");
+            else
+                mLoadDialog.show("正在获取数据");
         }
     }
 
@@ -426,7 +495,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 adapter.notifyDataSetChanged();
                 xRefreshView.stopRefresh();
 
-
+                //手动下载或是数据库中已有该课程信息
                 if(isWillUpdated || OffLineLessonsHelper.getInstance().getLessonById(id) != null){
 
                     //step1: 保存课程详情
@@ -456,18 +525,84 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                         part.setName(member.getName());
                         part.setUserId(member.getUser_id());
                         part.setStatus(member.getStatus());
+                        part.setIs_invited(member.is_invited());
                         parts.add(part);
                     }
 
                     ParticipantHelper.getInstance().insertParticipantlist(parts,id);
 
-                    if(isWillUpdated && isOnlineMode)
-                        Toast.makeText(this,"下载成功,可切换至离线模式下查看~",Toast.LENGTH_SHORT).show();
+                    if(isWillUpdated ){
+                        if(isOnlineMode)
+                            Toast.makeText(this,"下载成功,可切换至离线模式下查看~",Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(this,"离线数据已更新~",Toast.LENGTH_SHORT).show();
+                    }
 
+                    isWillUpdated = false;
                 }
 
             }else{
                 xRefreshView.stopRefresh(false);
             }
+    }
+
+    @Override
+    public void doSignCompleted(BaseEntity entity) {
+
+        if(entity != null && entity.getErr() == null){
+
+            SignHelper.getInstance().deleteAll(id);
+            Toast.makeText(this,"签到数据上传成功!",Toast.LENGTH_SHORT).show();
+
+            //重新从后台获取数据并更新数据库
+            mOffLineDetailPresenterImpl.getOffLineDetail(id);
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mAlertDialog != null && mAlertDialog.isShowing()){
+            mAlertDialog.dismiss();
+            return;
+        }
+
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void onNetChange(int networkType) {
+        if(networkType == SystemTool.NETWORK_NONE){
+
+            if(isOnlineMode == false)
+                return;
+
+            if(App.isKicked == true)
+                return;
+
+            if(mAlertDialog != null && mAlertDialog.isShowing())
+                mAlertDialog.dismiss();
+
+            mAlertDialog = DialogUtils.create(this);
+            mAlertDialog.show(new AlertDialogListener() {
+                @Override
+                public void onConFirm() {
+                    mAlertDialog.dismiss();
+                    Intent intent = new Intent(OfflineDetailActivity.this,MainActivity.class);
+                    intent.putExtra("isToOffline",true);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancel() {
+                    mAlertDialog.dismiss();
+                }
+                },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+
+
+
+
+        }
     }
 }

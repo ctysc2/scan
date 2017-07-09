@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.bolue.scan.greendao.entity.OffLineLessons;
 import com.bolue.scan.greendao.entity.Participant;
 import com.bolue.scan.greendaohelper.OffLineLessonsHelper;
 import com.bolue.scan.greendaohelper.ParticipantHelper;
+import com.bolue.scan.greendaohelper.SignHelper;
 import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.OffLineSignedEntity;
@@ -148,7 +150,7 @@ public class OffLineSignListActivity extends BaseActivity {
                         public void onCancel() {
                             mAlertDialog.dismiss();
                         }
-                    },"未删除通知","未上传的线下课没有批量删除,请确认后单个删除","知道了");
+                    },"未删除通知","未上传的线下课没有批量删除,请确认后单个删除。","知道了");
                 }
 
 
@@ -243,7 +245,7 @@ public class OffLineSignListActivity extends BaseActivity {
                 Intent intent = new Intent(OffLineSignListActivity.this,OfflineDetailActivity.class);
                 intent.putExtra("id",dataSource.get(position).getId());
                 intent.putExtra("isOnlineMode",false);
-                startActivity(intent);
+                startActivityForResult(intent,100);
             }
         });
         mAdapter.setOnSelectClickListener(new OnItemClickListener() {
@@ -267,6 +269,7 @@ public class OffLineSignListActivity extends BaseActivity {
                         public void onConFirm() {
                             OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(position).getId());
                             ParticipantHelper.getInstance().deleteAll(dataSource.get(position).getId());
+                            SignHelper.getInstance().deleteAll(dataSource.get(position).getId());
                             mAdapter.delete(position);
                             updateSelectNum();
 
@@ -282,7 +285,7 @@ public class OffLineSignListActivity extends BaseActivity {
                             mAlertDialog.dismiss();
 
                         }
-                    },"删除离线数据","该线下课签到的数据还未上传,您确定要删除吗？删除后可能会造成数据丢失");
+                    },"删除离线数据","该线下课签到的数据还未上传,您确定要删除吗？删除后可能会造成数据丢失!");
 
                 }else{
                     OffLineLessonsHelper.getInstance().deleteLesson(dataSource.get(position).getId());
@@ -310,15 +313,26 @@ public class OffLineSignListActivity extends BaseActivity {
         xRefreshView.enableReleaseToLoadMore(true);
         xRefreshView.enableRecyclerViewPullUp(true);
 
-
+        getDataFromDb();
 
 
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 100 && resultCode == RESULT_OK ){
+            Log.i("signList","onActivityResult");
+           getDataFromDb();
+           return;
+        }
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
-        getDataFromDb();
+
     }
 
     private void getDataFromDb() {
@@ -334,7 +348,6 @@ public class OffLineSignListActivity extends BaseActivity {
                 entity.setId(lesson.getId().intValue());
                 entity.setStatus(lesson.getStatus());
                 entity.setTitle(lesson.getTitle());
-                entity.setSelected(false);
                 entity.setBrief_image(lesson.getBrief_image());
                 entity.setJoin_num(lesson.getJoin_num());
                 dataSource.add(entity);

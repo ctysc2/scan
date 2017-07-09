@@ -4,18 +4,32 @@ import android.Manifest;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bolue.scan.R;
+import com.bolue.scan.application.App;
+import com.bolue.scan.greendao.entity.Sign;
+import com.bolue.scan.greendaohelper.SignHelper;
+import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.mvp.entity.ParticipantEntity;
+import com.bolue.scan.mvp.entity.SignRequestEntity;
+import com.bolue.scan.mvp.entity.base.BaseEntity;
 import com.bolue.scan.mvp.presenter.impl.ParticipantPresenterImpl;
+import com.bolue.scan.mvp.presenter.impl.SignPresenterImpl;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
+import com.bolue.scan.mvp.view.DoSignView;
 import com.bolue.scan.mvp.view.ParticipantDetailView;
 import com.bolue.scan.utils.DialogUtils;
+import com.bolue.scan.utils.SystemTool;
 import com.bolue.scan.zxing.activity.CaptureActivity;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -23,7 +37,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class ParticipantDetailActivity extends BaseActivity implements ParticipantDetailView{
+public class ParticipantDetailActivity extends BaseActivity implements ParticipantDetailView,DoSignView{
 
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
@@ -49,6 +63,8 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     @BindView(R.id.bt_signed)
     Button mBtScaned;
 
+    @Inject
+    SignPresenterImpl mSignPresenterImpl;
 
     @Inject
     ParticipantPresenterImpl mParticipantPresenterImpl;
@@ -73,9 +89,74 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
                 break;
             case R.id.bt_sign:
 
+                //dummy
+                checkCode = "123456";
+
+                if(TextUtils.isEmpty(checkCode)){
+                    Toast.makeText(this,"参会人员信息异常",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if(isOnlineMode){
 
+                    if(mAlertDialog != null && mAlertDialog.isShowing())
+                        mAlertDialog.dismiss();
+
+                    mAlertDialog = DialogUtils.create(this);
+                    mAlertDialog.show(new AlertDialogListener() {
+                        @Override
+                        public void onConFirm() {
+
+                            mAlertDialog.dismiss();
+
+                            SignRequestEntity entity = new SignRequestEntity();
+                            ArrayList<SignRequestEntity.Check> checkList = new ArrayList<>();
+                            checkList.add(new SignRequestEntity.Check(checkCode));
+                            entity.setSign_list(checkList);
+                            mSignPresenterImpl.beforeRequest();
+                            mSignPresenterImpl.doSign(entity);
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                            mAlertDialog.dismiss();
+
+                        }
+                    },"签到确认","点击确定签到后,不可以取消签到。");
+
+
+
                 }else{
+                    if(SignHelper.getInstance().getSign(resource_id,checkCode) != null){
+                        Toast.makeText(this,"该信息已在离线队列中",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(mAlertDialog != null && mAlertDialog.isShowing())
+                        mAlertDialog.dismiss();
+
+                    mAlertDialog = DialogUtils.create(this);
+                    mAlertDialog.show(new AlertDialogListener() {
+                        @Override
+                        public void onConFirm() {
+
+                            mAlertDialog.dismiss();
+
+                            //离线模式加入数据库缓存
+                            Sign sign = new Sign();
+                            sign.setId(resource_id);
+                            sign.setCheckCode(checkCode);
+                            SignHelper.getInstance().insertSign(sign);
+                            Toast.makeText(ParticipantDetailActivity.this,"签到信息添加成功",Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                            mAlertDialog.dismiss();
+
+                        }
+                    },"签到确认","点击确定将添加至离线队列。");
 
                 }
 
@@ -100,6 +181,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
         Intent intent = getIntent();
 
         id = intent.getIntExtra("user_id",-1);
+        Log.i("detail","id:"+id);
         isInvited = intent.getBooleanExtra("is_invited",false);
         resource_id = intent.getIntExtra("resource_id",-1);
         status = intent.getIntExtra("status",5);
@@ -121,8 +203,10 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
             mBtScaned.setVisibility(View.GONE);
         }
         mParticipantPresenterImpl.attachView(this);
-        mParticipantPresenterImpl.beforeRequest();
         mParticipantPresenterImpl.getParticipantDetail(id,isInvited,resource_id);
+
+
+        mSignPresenterImpl.attachView(this);
 
     }
 
@@ -136,7 +220,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     public void showProgress(int reqType) {
         if(mLoadDialog == null){
             mLoadDialog = DialogUtils.create(this);
-            mLoadDialog.show("正在获取数据");
+            mLoadDialog.show("正在上传签到信息");
         }
     }
 
@@ -164,4 +248,51 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
             mEmail.setText("邮箱  "+entity.getResult().getEmail());
         }
     }
+
+    @Override
+    public void doSignCompleted(BaseEntity entity) {
+        if(entity != null && entity.getErr() == null){
+            Toast.makeText(this,"签到成功!",Toast.LENGTH_SHORT).show();
+            mBtScan.setVisibility(View.GONE);
+            mBtScaned.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public void onNetChange(int networkType) {
+        if(networkType == SystemTool.NETWORK_NONE){
+
+            if(isOnlineMode == false)
+                return;
+
+            if(App.isKicked == true)
+                return;
+
+            if(mAlertDialog != null && mAlertDialog.isShowing())
+                mAlertDialog.dismiss();
+
+            mAlertDialog = DialogUtils.create(this);
+            mAlertDialog.show(new AlertDialogListener() {
+                @Override
+                public void onConFirm() {
+                    mAlertDialog.dismiss();
+                    Intent intent = new Intent(ParticipantDetailActivity.this,MainActivity.class);
+                    intent.putExtra("isToOffline",true);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancel() {
+                    mAlertDialog.dismiss();
+                }
+            },"网络异常","没有检测到网络连接,是否切换至离线模式","取消","看离线");
+
+
+
+
+        }
+    }
+
+
 }

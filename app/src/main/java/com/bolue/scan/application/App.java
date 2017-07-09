@@ -34,6 +34,7 @@ public class App extends MultiDexApplication {
     private DaoSession mDaoSession;
     private MyOpenHelper mHelper;
     private static Activity sActivity;
+    public  static boolean isKicked;
     @Override
     public void onCreate() {
         super.onCreate();
