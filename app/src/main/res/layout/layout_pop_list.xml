@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
             android:background="#FAFAFA"
-            android:scrollbars="none" />
+            android:scrollbars="vertical"
+            />
     </com.andview.refreshview.XRefreshView>
 </LinearLayout>

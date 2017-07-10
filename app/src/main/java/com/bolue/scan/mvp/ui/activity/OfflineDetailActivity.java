@@ -42,17 +42,21 @@ import com.bolue.scan.utils.DateTransformUtil;
 import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.DimenUtil;
 import com.bolue.scan.utils.SystemTool;
+import com.bolue.scan.utils.TransformUtils;
 import com.bolue.scan.zxing.activity.CaptureActivity;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
 import rx.functions.Action1;
 
 public class OfflineDetailActivity extends BaseActivity implements OffLineDetailView,DoSignView {
@@ -163,7 +167,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         xRefreshView.setPullLoadEnable(true);
         recyclerView.setHasFixedSize(true);
 
-        adapter = new OffLineDetailAdapter(dataSource, this);
+        adapter = new OffLineDetailAdapter(dataSource, this,id);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -584,21 +588,40 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
             if(mAlertDialog != null && mAlertDialog.isShowing())
                 mAlertDialog.dismiss();
 
-            mAlertDialog = DialogUtils.create(this);
-            mAlertDialog.show(new AlertDialogListener() {
-                @Override
-                public void onConFirm() {
-                    mAlertDialog.dismiss();
-                    Intent intent = new Intent(OfflineDetailActivity.this,MainActivity.class);
-                    intent.putExtra("isToOffline",true);
-                    startActivity(intent);
-                }
 
-                @Override
-                public void onCancel() {
-                    mAlertDialog.dismiss();
-                }
-                },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+            Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                    .subscribe(new Observer<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            mAlertDialog = DialogUtils.create(OfflineDetailActivity.this);
+                            mAlertDialog.show(new AlertDialogListener() {
+                                @Override
+                                public void onConFirm() {
+                                    mAlertDialog.dismiss();
+                                    Intent intent = new Intent(OfflineDetailActivity.this,MainActivity.class);
+                                    intent.putExtra("isToOffline",true);
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onCancel() {
+                                    mAlertDialog.dismiss();
+                                }
+                            },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object data) {
+
+                        }
+
+                    });
+
 
 
 

@@ -35,6 +35,7 @@ import com.bolue.scan.mvp.entity.SignRequestEntity;
 import com.bolue.scan.mvp.entity.base.BaseEntity;
 import com.bolue.scan.mvp.presenter.impl.SignPresenterImpl;
 import com.bolue.scan.mvp.ui.activity.MainActivity;
+import com.bolue.scan.mvp.ui.activity.OfflineDetailActivity;
 import com.bolue.scan.mvp.ui.activity.ParticipantDetailActivity;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
 import com.bolue.scan.mvp.view.DoSignView;
@@ -223,7 +224,7 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 			}
 
 			//没有查到
-			Toast.makeText(this,"该二维码信息不属于当前课程,请确认",Toast.LENGTH_SHORT).show();
+			Toast.makeText(this,"该二维码信息不属于当前课程,请确认:"+resultString,Toast.LENGTH_SHORT).show();
 
 			reScanDelay();
 
@@ -358,7 +359,7 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 
 	private void reScanDelay(){
 
-		rx.Observable.timer(1, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+		rx.Observable.timer(1500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
 				.subscribe(new Observer<Object>() {
 					@Override
 					public void onCompleted() {
@@ -393,22 +394,38 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 			if(mAlertDialog != null && mAlertDialog.isShowing())
 				mAlertDialog.dismiss();
 
-			mAlertDialog = DialogUtils.create(this);
-			mAlertDialog.show(new AlertDialogListener() {
-				@Override
-				public void onConFirm() {
-					mAlertDialog.dismiss();
-					Intent intent = new Intent(CaptureActivity.this,MainActivity.class);
-					intent.putExtra("isToOffline",true);
-					startActivity(intent);
+			rx.Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+					.subscribe(new Observer<Object>() {
+						@Override
+						public void onCompleted() {
+							mAlertDialog = DialogUtils.create(CaptureActivity.this);
+							mAlertDialog.show(new AlertDialogListener() {
+								@Override
+								public void onConFirm() {
+									mAlertDialog.dismiss();
+									Intent intent = new Intent(CaptureActivity.this,MainActivity.class);
+									intent.putExtra("isToOffline",true);
+									startActivity(intent);
+								}
 
-				}
+								@Override
+								public void onCancel() {
+									mAlertDialog.dismiss();
+								}
+							},"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+						}
 
-				@Override
-				public void onCancel() {
-					mAlertDialog.dismiss();
-				}
-			},"网络异常","没有检测到网络连接,是否切换至离线模式","取消","看离线");
+						@Override
+						public void onError(Throwable e) {
+
+						}
+
+						@Override
+						public void onNext(Object data) {
+
+						}
+
+					});
 
 
 

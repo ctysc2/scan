@@ -27,14 +27,18 @@ import com.bolue.scan.mvp.view.DoSignView;
 import com.bolue.scan.mvp.view.ParticipantDetailView;
 import com.bolue.scan.utils.DialogUtils;
 import com.bolue.scan.utils.SystemTool;
+import com.bolue.scan.utils.TransformUtils;
 import com.bolue.scan.zxing.activity.CaptureActivity;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
 import rx.functions.Action1;
 
 public class ParticipantDetailActivity extends BaseActivity implements ParticipantDetailView,DoSignView{
@@ -147,6 +151,10 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
                             sign.setCheckCode(checkCode);
                             SignHelper.getInstance().insertSign(sign);
                             Toast.makeText(ParticipantDetailActivity.this,"签到信息添加成功",Toast.LENGTH_SHORT).show();
+
+                            //离线模式也显示已签到
+                            mBtScan.setVisibility(View.GONE);
+                            mBtScaned.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -194,7 +202,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
         }
 
 
-        if(status == 5){
+        if(status == 5 || SignHelper.getInstance().getSign(resource_id,checkCode) != null ){
             mBtScan.setVisibility(View.GONE);
             mBtScaned.setVisibility(View.VISIBLE);
         }else{
@@ -271,21 +279,38 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
             if(mAlertDialog != null && mAlertDialog.isShowing())
                 mAlertDialog.dismiss();
 
-            mAlertDialog = DialogUtils.create(this);
-            mAlertDialog.show(new AlertDialogListener() {
-                @Override
-                public void onConFirm() {
-                    mAlertDialog.dismiss();
-                    Intent intent = new Intent(ParticipantDetailActivity.this,MainActivity.class);
-                    intent.putExtra("isToOffline",true);
-                    startActivity(intent);
-                }
+            Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                    .subscribe(new Observer<Object>() {
+                        @Override
+                        public void onCompleted() {
+                            mAlertDialog = DialogUtils.create(ParticipantDetailActivity.this);
+                            mAlertDialog.show(new AlertDialogListener() {
+                                @Override
+                                public void onConFirm() {
+                                    mAlertDialog.dismiss();
+                                    Intent intent = new Intent(ParticipantDetailActivity.this,MainActivity.class);
+                                    intent.putExtra("isToOffline",true);
+                                    startActivity(intent);
+                                }
 
-                @Override
-                public void onCancel() {
-                    mAlertDialog.dismiss();
-                }
-            },"网络异常","没有检测到网络连接,是否切换至离线模式","取消","看离线");
+                                @Override
+                                public void onCancel() {
+                                    mAlertDialog.dismiss();
+                                }
+                            },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Object data) {
+
+                        }
+
+                    });
 
 
 

@@ -14,7 +14,7 @@
         <!--窗口的颜色-->
         <item name="android:windowBackground">@color/white</item>
 
-        <item name="android:textColorSecondary">#333333</item>
+        <item name="android:textColorSecondary">#7F666666</item>
 
     </style>
     <style name="DialogStyle" parent="@android:style/Theme.Dialog">

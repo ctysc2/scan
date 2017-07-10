@@ -267,6 +267,25 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,OffLineSignListActivity.class));
+                Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                        .subscribe(new Observer<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                menu.toggle();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Object data) {
+
+                            }
+
+                        });
+
             }
         });
         mTvName = (TextView)findViewById(R.id.tv_name);
@@ -577,9 +596,6 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        //Log.i("Location","onLocationChanged city:"+aMapLocation.getCity());
-        //Log.i("Location","onLocationChanged Latitude:"+aMapLocation.getLatitude());
-        //Log.i("Location","onLocationChanged Longitude:"+aMapLocation.getLongitude());
         Toast.makeText(this,aMapLocation.getCity(),Toast.LENGTH_SHORT).show();
     }
 
@@ -709,21 +725,38 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 if(mAlertDialog != null && mAlertDialog.isShowing())
                     mAlertDialog.dismiss();
 
-                mAlertDialog = DialogUtils.create(this);
-                mAlertDialog.show(new AlertDialogListener() {
-                    @Override
-                    public void onConFirm() {
-                        mAlertDialog.dismiss();
-                        Intent intent = new Intent(MainActivity.this,MainActivity.class);
-                        intent.putExtra("isToOffline",true);
-                        startActivity(intent);
-                    }
+                Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                        .subscribe(new Observer<Object>() {
+                            @Override
+                            public void onCompleted() {
+                                mAlertDialog = DialogUtils.create(MainActivity.this);
+                                mAlertDialog.show(new AlertDialogListener() {
+                                    @Override
+                                    public void onConFirm() {
+                                        mAlertDialog.dismiss();
+                                        Intent intent = new Intent(MainActivity.this,MainActivity.class);
+                                        intent.putExtra("isToOffline",true);
+                                        startActivity(intent);
+                                    }
 
-                    @Override
-                    public void onCancel() {
-                        mAlertDialog.dismiss();
-                    }
-                },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+                                    @Override
+                                    public void onCancel() {
+                                        mAlertDialog.dismiss();
+                                    }
+                                },"网络异常","没有检测到网络连接,是否切换至离线模式?","取消","看离线");
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Object data) {
+
+                            }
+
+                        });
 
 
             }

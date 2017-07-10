@@ -89,8 +89,10 @@ public class DialogUtils {
 
     }
     public void dismiss(){
-        if(mDialog!=null)
+        if(mDialog!=null){
             mDialog.dismiss();
+        }
+
 
 
     }

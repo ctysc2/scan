@@ -19,7 +19,7 @@
     <application
         android:name=".application.App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -46,14 +46,20 @@
             android:name=".zxing.activity.CaptureActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-        <activity android:name=".mvp.ui.activity.OfflineDetailActivity" />
-        <activity android:name=".mvp.ui.activity.AMapViewActivity" />
-        <activity android:name=".mvp.ui.activity.ParticipantDetailActivity" />
+        <activity android:name=".mvp.ui.activity.OfflineDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mvp.ui.activity.AMapViewActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".mvp.ui.activity.ParticipantDetailActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".mvp.ui.activity.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"
             />
-        <activity android:name=".mvp.ui.activity.OffLineSignListActivity"></activity>
+        <activity android:name=".mvp.ui.activity.OffLineSignListActivity"
+            android:screenOrientation="portrait"></activity>
+
         <receiver android:name="com.bolue.scan.mvp.ui.broadcast.NetBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />

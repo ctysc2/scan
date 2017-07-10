@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.andview.refreshview.recyclerview.BaseRecyclerAdapter;
 import com.bolue.scan.R;
+import com.bolue.scan.greendaohelper.SignHelper;
 import com.bolue.scan.listener.OnItemClickListener;
 import com.bolue.scan.mvp.entity.LabelEntity;
 import com.bolue.scan.mvp.entity.OffLineLessonEntity;
@@ -35,6 +36,8 @@ public class OffLineDetailAdapter extends BaseRecyclerAdapter<OffLineDetailAdapt
 
     private OnItemClickListener mOnItemClickListener;
 
+    private int id;
+
     //更新数据
     public void setData(ArrayList<OffLineLessonEntity.DataEntity.Member> dataSource){
         this.dataSource = dataSource;
@@ -44,9 +47,10 @@ public class OffLineDetailAdapter extends BaseRecyclerAdapter<OffLineDetailAdapt
         mOnItemClickListener = listener;
     }
 
-    public OffLineDetailAdapter(ArrayList<OffLineLessonEntity.DataEntity.Member> dataSource, Context context){
+    public OffLineDetailAdapter(ArrayList<OffLineLessonEntity.DataEntity.Member> dataSource, Context context,int id){
         this.dataSource = dataSource;
         this.mContext = context;
+        this.id = id;
     }
     @Override
     public int getAdapterItemViewType(int position) {
@@ -77,7 +81,7 @@ public class OffLineDetailAdapter extends BaseRecyclerAdapter<OffLineDetailAdapt
         OffLineLessonEntity.DataEntity.Member data = dataSource.get(position);
         holder.mName.setText(data.getName());
 
-        if(data.getStatus() == 5){
+        if(data.getStatus() == 5 || SignHelper.getInstance().getSign(id,data.getCheckcode()) != null){
             holder.mStatus.setText("已参会");
             holder.mStatus.setTextColor(Color.parseColor("#EA9333"));
         }else{

@@ -104,10 +104,11 @@
             >
             <ImageView
                 android:id="@+id/iv_show_password"
-                android:layout_width="16dp"
+                android:layout_width="18dp"
                 android:layout_height="16dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
+                android:scaleType="centerInside"
                 android:layout_toLeftOf="@+id/iv_clear_password"
                 android:src="@drawable/selector_show_password" />
             <ImageView
@@ -144,7 +145,7 @@
         android:layout_height="45dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/selector_login_bac"
         android:text="登录"
         android:textColor="@color/color_text_white"

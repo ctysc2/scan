@@ -206,8 +206,8 @@ public class LoginActivity extends BaseActivity implements LoginView{
     public void initViews() {
         mTvErr.setText("");
         mLoginPresenterImpl.attachView(this);
-        mEdUser.setText("15502145237");
-        mEdPassword.setText("cty070912");
+        mEdUser.setText("15221621139");
+        mEdPassword.setText("19960815dd");
         mEdUser.addTextChangedListener(mWatcher);
         mEdPassword.addTextChangedListener(mWatcher);
         onTextInputChanged();

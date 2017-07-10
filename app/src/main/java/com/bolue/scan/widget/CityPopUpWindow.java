@@ -51,7 +51,7 @@ public class CityPopUpWindow extends PopupWindow{
 
     public CityPopUpWindow(Activity mActivity,View view,ArrayList<LabelEntity.DataEntity.City> cities){
 
-        super((int) DimenUtil.dp2px(80),(int)DimenUtil.dp2px(300));
+        super((int) DimenUtil.dp2px(100),(int)DimenUtil.dp2px(350));
 
         this.mActivity = mActivity;
         this.mView = view;
