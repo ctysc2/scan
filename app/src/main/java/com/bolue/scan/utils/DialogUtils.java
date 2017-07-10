@@ -51,6 +51,9 @@ public class DialogUtils {
     public void show(AlertDialogListener listener, String title, String content){
         showAlertDialog(listener,title,content);
     }
+    public void show(AlertDialogListener listener, String title, String content,String nagitive,String positive,boolean isCancelable){
+        showAlertDialog(listener,title,content,nagitive,positive,isCancelable);
+    }
     public void show(AlertDialogListener listener, String title, String content,String nagitive,String positive){
         showAlertDialog(listener,title,content,nagitive,positive);
     }
@@ -137,7 +140,14 @@ public class DialogUtils {
 
     }
 
-    //两行提示框自定义文言
+    private  void showAlertDialog(final AlertDialogListener listenerString,String hint1,String hint2,String nagitive,String positive,boolean isCancelable) {
+
+        showAlertDialog(listenerString,hint1,hint2,nagitive,positive);
+        mDialog.setCancelable(isCancelable);
+
+    }
+
+        //两行提示框自定义文言
     private  void showAlertDialog(final AlertDialogListener listenerString,String hint1,String hint2,String nagitive,String positive){
         LayoutInflater inflater = LayoutInflater.from(mContext);
 

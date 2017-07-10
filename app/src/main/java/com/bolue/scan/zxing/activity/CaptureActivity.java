@@ -191,7 +191,7 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 			for(int i = 0;i<checkcodes.size();i++){
 
 				//dummy
-				if(resultString.equals("123456") || resultString.equals(checkcodes.get(i))){
+				if( resultString.equals(checkcodes.get(i))){
 
 					if(isOnlineMode){
 						//在线模式调用签到接口

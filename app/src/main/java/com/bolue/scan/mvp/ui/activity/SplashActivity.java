@@ -54,7 +54,7 @@ public class SplashActivity extends BaseActivity implements AlertDialogListener{
                             startTransTimer();
                         }else{
                             mAlertDialog = DialogUtils.create(SplashActivity.this);
-                            mAlertDialog.show(SplashActivity.this,"权限设置","APP需要获取手机号码确保后台操作记录,请打开权限后重新进入应用","退出","去设置");
+                            mAlertDialog.show(SplashActivity.this,"权限设置","APP需要获取手机号码确保后台操作记录,请打开权限后重新进入应用","退出","去设置",false);
                         }
 
                     }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 
 import com.bolue.scan.R;
@@ -109,7 +110,7 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
         }
         else{
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            LinearLayout toolbar = (LinearLayout) findViewById(R.id.toolbar);
 
             if (toolbar != null) {
                 toolbar.setPadding(0, 0, 0, 0);

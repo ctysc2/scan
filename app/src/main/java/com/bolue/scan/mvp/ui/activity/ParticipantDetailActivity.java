@@ -90,8 +90,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
             case R.id.bt_sign:
 
                 //dummy
-                checkCode = "123456";
-
+                //checkCode = "123456";
                 if(TextUtils.isEmpty(checkCode)){
                     Toast.makeText(this,"参会人员信息异常",Toast.LENGTH_SHORT).show();
                     return;
