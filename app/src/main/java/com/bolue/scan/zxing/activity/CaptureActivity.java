@@ -178,9 +178,9 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 	public void handleDecode(Result result, Bitmap barcode) {
 		inactivityTimer.onActivity();
 		playBeepSoundAndVibrate();
-		String resultString = result.getText();
+		String resultString = (result != null?result.getText():"");
 		//FIXME
-		if (resultString.equals("")) {
+		if (resultString == null || resultString.equals("")) {
 			Toast.makeText(CaptureActivity.this, "扫描失败，请重试", Toast.LENGTH_SHORT).show();
 		}else {
 //			Intent resultIntent = new Intent();
