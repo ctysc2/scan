@@ -2,11 +2,9 @@ package com.bolue.scan.zxing.activity;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -16,14 +14,10 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.bolue.scan.R;
@@ -35,8 +29,6 @@ import com.bolue.scan.mvp.entity.SignRequestEntity;
 import com.bolue.scan.mvp.entity.base.BaseEntity;
 import com.bolue.scan.mvp.presenter.impl.SignPresenterImpl;
 import com.bolue.scan.mvp.ui.activity.MainActivity;
-import com.bolue.scan.mvp.ui.activity.OfflineDetailActivity;
-import com.bolue.scan.mvp.ui.activity.ParticipantDetailActivity;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
 import com.bolue.scan.mvp.view.DoSignView;
 import com.bolue.scan.utils.DialogUtils;
@@ -51,7 +43,6 @@ import com.google.zxing.Result;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observer;
 
@@ -292,7 +283,7 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setOnCompletionListener(beepListener);
 
-			AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
+			AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.success);
 			try {
 				mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
 				file.close();
