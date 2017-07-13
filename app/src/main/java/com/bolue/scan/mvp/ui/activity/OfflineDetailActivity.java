@@ -76,6 +76,10 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     @BindView(R.id.tv_panel_participant_num)
     TextView mPanelNum;
 
+
+    @BindView(R.id.tv_panel_parted)
+    TextView mPanelParted;
+
     @BindView(R.id.ll_download)
     LinearLayout mLLDownload;
 
@@ -96,6 +100,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     private TextView mDate;
 
     private TextView mParticipantNum;
+
+    private TextView mParted;
 
     private LinearLayoutManager layoutManager;
 
@@ -204,7 +210,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         mLocation = (TextView) headerView.findViewById(R.id.tv_location);
         mDate = (TextView)headerView.findViewById(R.id.tv_date);
         mParticipantNum = (TextView)headerView.findViewById(R.id.tv_participant_num);
-
+        mParted = (TextView) headerView.findViewById(R.id.tv_parted);
         xRefreshView.setCustomHeaderView(new XRefreshViewHeader(this));
         recyclerView.setAdapter(adapter);
         xRefreshView.setAutoLoadMore(false);
@@ -397,11 +403,9 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 mTitle.setText(lesson.getTitle());
                 mLocation.setText(lesson.getSite());
                 mDate.setText(DateTransformUtil.transFormDate(lesson.getStart_time(),lesson.getEnd_time()));
-                mParticipantNum.setText("("+lesson.getEnroll_count()+")");
                 longitude = lesson.getLongitude();
                 latitude = lesson.getLatitude();
                 name = lesson.getSite();
-                mPanelNum.setText("("+lesson.getEnroll_count()+")");
 
                 status = lesson.getStatus();
                 join_num = lesson.getJoin_num();
@@ -413,6 +417,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
                 dataSource = new ArrayList<>();
 
+                int participantedNum = 0;
+
                 for(int i = 0;i<parts.size();i++){
 
                     Participant part = parts.get(i);
@@ -421,10 +427,23 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                     member.setName(part.getName());
                     member.setCheckcode(part.getCheckCode());
                     member.setStatus(part.getStatus());
+
+                    if(part.getStatus() == 5 || SignHelper.getInstance().getSign(id,part.getCheckCode()) != null){
+                        participantedNum++;
+                    }
+
                     member.setUser_id(part.getUserId());
                     member.setIs_invited(part.getIs_invited());
                     dataSource.add(member);
                 }
+
+                //更新参会人数
+                mParted.setText(""+participantedNum);
+                mParticipantNum.setText("/"+lesson.getEnroll_count()+")");
+
+                mPanelParted.setText(""+participantedNum);
+                mPanelNum.setText("/"+(lesson != null ?lesson.getEnroll_count():0)+")");
+
 
                 adapter.setData(dataSource);
                 adapter.notifyDataSetChanged();
@@ -491,13 +510,28 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 mTitle.setText(entity.getResult().getTitle());
                 mLocation.setText(entity.getResult().getAddress().getSite());
                 mDate.setText(DateTransformUtil.transFormDate(entity.getResult().getStart_time(),entity.getResult().getEnd_time()));
-                mParticipantNum.setText("("+entity.getResult().getEnroll_count()+")");
-                mPanelNum.setText("("+entity.getResult().getEnroll_count()+")");
 
                 dataSource = entity.getResult().getEnroll_list();
                 adapter.setData(dataSource);
                 adapter.notifyDataSetChanged();
                 xRefreshView.stopRefresh();
+
+                int participantedNum = 0;
+
+                for(int i = 0;i<dataSource.size();i++){
+
+                    OffLineLessonEntity.DataEntity.Member member = dataSource.get(i);
+
+                    if(member.getStatus() == 5 || SignHelper.getInstance().getSign(id,member.getCheckcode()) != null){
+                        participantedNum++;
+                    }
+
+                }
+                mParted.setText(""+participantedNum);
+                mParticipantNum.setText("/"+entity.getResult().getEnroll_count()+")");
+
+                mPanelParted.setText(""+participantedNum);
+                mPanelNum.setText("/"+entity.getResult().getEnroll_count()+")");
 
                 //手动下载或是数据库中已有该课程信息
                 if(isWillUpdated || OffLineLessonsHelper.getInstance().getLessonById(id) != null){

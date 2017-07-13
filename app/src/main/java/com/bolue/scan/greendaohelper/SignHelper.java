@@ -62,7 +62,7 @@ public class SignHelper {
         return dao.queryBuilder()
                 .where(SignDao.Properties.UserName.eq(userName))
                 .where(SignDao.Properties.Id.eq(id))
-                .where(SignDao.Properties.CheckCode.eq(checkCode))
+                .where(SignDao.Properties.CheckCode.eq(checkCode != null?checkCode:""))
                 .build().unique();
 
     }
