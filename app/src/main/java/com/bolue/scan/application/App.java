@@ -61,12 +61,12 @@ public class App extends MultiDexApplication {
         this.registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                Log.d("YWK",activity+"onActivityCreated");
+                Log.d("CTY",activity+"onActivityCreated");
             }
 
             @Override
             public void onActivityStarted(Activity activity) {
-                Log.d("YWK",activity+"onActivityStarted");
+                Log.d("CTY",activity+"onActivityStarted");
                 sActivity=activity;
 
             }

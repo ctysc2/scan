@@ -2,10 +2,13 @@ package com.bolue.scan.greendaohelper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.bolue.scan.greendao.entity.Participant;
 import com.bolue.scan.greendao.gen.DaoMaster;
+import com.bolue.scan.greendao.gen.OffLineLessonsDao;
 import com.bolue.scan.greendao.gen.ParticipantDao;
+import com.bolue.scan.greendao.gen.SignDao;
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
 
 
@@ -22,7 +25,9 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        MigrationHelper.migrate(db, ParticipantDao.class);//数据版本变更才会执行
+        Log.i("greenDAO","onUpgrade "+"oldVersion:"+oldVersion+" newVersion:"+newVersion);
+        MigrationHelper.migrate(db, ParticipantDao.class, OffLineLessonsDao.class, SignDao.class);//数据版本变更才会执行
+
     }
 
 }
