@@ -45,6 +45,7 @@ import javax.inject.Inject;
 
 import butterknife.OnClick;
 import rx.Observer;
+import rx.Subscription;
 
 /**
  * Initial the camera
@@ -65,6 +66,8 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 	private ArrayList<String> checkcodes;
 	private boolean isOnlineMode = true;
 	private int id;
+	private Subscription mTimerSubscription;
+
 	@Inject
 	SignPresenterImpl mSignPresenterImpl;
 //	private Button cancelScanButton;
@@ -158,6 +161,8 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 	@Override
 	protected void onDestroy() {
 		inactivityTimer.shutdown();
+		if(mTimerSubscription!=null)
+			mTimerSubscription.unsubscribe();
 		super.onDestroy();
 	}
 	
@@ -350,7 +355,7 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 
 	private void reScanDelay(){
 
-		rx.Observable.timer(1500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+		mTimerSubscription = rx.Observable.timer(1500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
 				.subscribe(new Observer<Object>() {
 					@Override
 					public void onCompleted() {
@@ -385,7 +390,7 @@ public class CaptureActivity extends BaseActivity implements Callback,DoSignView
 			if(mAlertDialog != null && mAlertDialog.isShowing())
 				mAlertDialog.dismiss();
 
-			rx.Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+			mTimerSubscription = rx.Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
 					.subscribe(new Observer<Object>() {
 						@Override
 						public void onCompleted() {

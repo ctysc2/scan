@@ -39,6 +39,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class ParticipantDetailActivity extends BaseActivity implements ParticipantDetailView,DoSignView{
@@ -84,6 +85,8 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     private boolean isOnlineMode = false;
 
     private String checkCode = "";
+
+    private Subscription mTimerSubscription;
 
     @OnClick({R.id.rl_back,R.id.bt_sign})
     public void onClick(View v){
@@ -224,6 +227,13 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mTimerSubscription!=null)
+            mTimerSubscription.unsubscribe();
+    }
+
+    @Override
     public void showProgress(int reqType) {
         if(mLoadDialog == null){
             mLoadDialog = DialogUtils.create(this);
@@ -279,7 +289,7 @@ public class ParticipantDetailActivity extends BaseActivity implements Participa
             if(mAlertDialog != null && mAlertDialog.isShowing())
                 mAlertDialog.dismiss();
 
-            Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+            mTimerSubscription = Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                     .subscribe(new Observer<Object>() {
                         @Override
                         public void onCompleted() {

@@ -57,6 +57,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class OfflineDetailActivity extends BaseActivity implements OffLineDetailView,DoSignView {
@@ -136,6 +137,8 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
     private OffLineLessons lesson;
 
     private List<Participant> parts;
+
+    private Subscription mTimerSubscription;
 
     @Inject
     SignPresenterImpl mSignPresenterImpl;
@@ -384,6 +387,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
 
     }
 
+
     private void setOriginDatas(){
         if(isOnlineMode){
             mLLDownload.setVisibility(View.GONE);
@@ -467,6 +471,14 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
         initViews();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(mTimerSubscription != null)
+            mTimerSubscription.unsubscribe();
+
+    }
     public void doclick(View v){
 
 
@@ -623,7 +635,7 @@ public class OfflineDetailActivity extends BaseActivity implements OffLineDetail
                 mAlertDialog.dismiss();
 
 
-            Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+            mTimerSubscription = Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                     .subscribe(new Observer<Object>() {
                         @Override
                         public void onCompleted() {

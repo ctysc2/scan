@@ -84,6 +84,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class MainActivity extends BaseActivity implements CalendarViewCreatedListener,ReserveView,CalendarOnPageChangedListener,AMapLocationListener,LabelView {
@@ -153,6 +154,10 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
     private LinearLayout mLLOffLine;
 
     private TextView mTvName;
+
+    private Subscription mTimerSubscription;
+
+    private Subscription mDialogSubscription;
 
     @OnClick({R.id.rl_last_month,R.id.rl_next_month,R.id.ll_location,R.id.rl_menu})
     public void onClick(View v){
@@ -267,7 +272,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,OffLineSignListActivity.class));
-                Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                mTimerSubscription = Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                         .subscribe(new Observer<Object>() {
                             @Override
                             public void onCompleted() {
@@ -296,7 +301,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                     @Override
                     public void call(ReLoginEvent reLoginEvent) {
 
-                        Observable.timer(1000, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                        mDialogSubscription = Observable.timer(1000, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                                 .subscribe(new Observer<Object>() {
                                     @Override
                                     public void onCompleted() {
@@ -550,6 +555,13 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         }
         if(mSubscription!=null)
             mSubscription.unsubscribe();
+
+        if(mTimerSubscription!=null)
+            mTimerSubscription.unsubscribe();
+
+        if(mDialogSubscription!=null)
+            mDialogSubscription.unsubscribe();
+
         Log.i("Calendar","onDestroy");
     }
 
@@ -658,7 +670,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
         }else{
             isExit = true;
             Toast.makeText(this,"再按一次退出",Toast.LENGTH_SHORT).show();
-            Observable.timer(2, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+            mTimerSubscription = Observable.timer(2, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                     .subscribe(new Observer<Object>() {
                         @Override
                         public void onCompleted() {
@@ -725,7 +737,7 @@ public class MainActivity extends BaseActivity implements CalendarViewCreatedLis
                 if(mAlertDialog != null && mAlertDialog.isShowing())
                     mAlertDialog.dismiss();
 
-                Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+                mDialogSubscription = Observable.timer(500, TimeUnit.MILLISECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                         .subscribe(new Observer<Object>() {
                             @Override
                             public void onCompleted() {

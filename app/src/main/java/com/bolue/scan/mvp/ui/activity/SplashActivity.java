@@ -24,9 +24,12 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class SplashActivity extends BaseActivity implements AlertDialogListener{
+
+    private Subscription mTimerSubscription;
 
     @Override
     public int getLayoutId() {
@@ -84,10 +87,17 @@ public class SplashActivity extends BaseActivity implements AlertDialogListener{
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mTimerSubscription!=null)
+            mTimerSubscription.unsubscribe();
+    }
+
     private void startTransTimer(){
 
-        //过3秒执行下一步
-        Observable.timer(1, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
+        //过1秒执行下一步
+        mTimerSubscription = Observable.timer(1, TimeUnit.SECONDS).compose(TransformUtils.<Object>defaultSchedulers())
                 .subscribe(new Observer<Object>() {
                     @Override
                     public void onCompleted() {
