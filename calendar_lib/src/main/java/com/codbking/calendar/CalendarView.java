@@ -127,9 +127,17 @@ public class CalendarView extends ViewGroup {
                 }
             }
 
+
+            //今天永久显示#21B7C4
+            String default_color =  "#000000";
+            int[]date=CalendarUtil.getYMD(new Date());
+            if(bean.year==date[0]&&bean.moth==date[1]&&bean.day==date[2]){
+                default_color = "#21B7C4";
+            }
+
             chidView.setSelected(selectPostion==i);
 
-            ((TextView)((ViewGroup)chidView).getChildAt(0)).setTextColor(selectPostion==i? Color.parseColor("#FFFFFF"):Color.parseColor("#000000"));
+            ((TextView)((ViewGroup)chidView).getChildAt(0)).setTextColor(selectPostion==i? Color.parseColor("#FFFFFF"):Color.parseColor(default_color));
 
             setItemClick(chidView, i, bean);
 
@@ -153,40 +161,31 @@ public class CalendarView extends ViewGroup {
 
 
                     ((TextView)((RelativeLayout)getChildAt(selectPostion)).getChildAt(0)).setTextColor(Color.parseColor("#000000"));
-             }
 
-            selectPostion = potsion;
+                    //今天永久显示#21B7C4
+                    int[]date=CalendarUtil.getYMD(new Date());
 
-            getChildAt(potsion).setSelected(true);
+                    if(data.get(selectPostion).year==date[0]&&data.get(selectPostion).moth==date[1]&&data.get(selectPostion).day==date[2]){
+                        ((TextView)((RelativeLayout)getChildAt(selectPostion)).getChildAt(0)).setTextColor(Color.parseColor("#21B7Cf"));
+                    }
+                }
 
-            final ScaleAnimation animation =new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f,
-                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            animation.setDuration(200);
-            getChildAt(potsion).startAnimation(animation);
-//            animation.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    animation.cancel();
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
+                selectPostion = potsion;
 
-            ((TextView)((RelativeLayout)getChildAt(potsion)).getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
+                getChildAt(potsion).setSelected(true);
 
-            Globle.selectedDate = bean.year+"-"+bean.moth+"-"+bean.day;
+                final ScaleAnimation animation =new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                animation.setDuration(200);
+                getChildAt(potsion).startAnimation(animation);
 
-            if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(view, potsion, bean);
-            }
+                ((TextView)((RelativeLayout)getChildAt(potsion)).getChildAt(0)).setTextColor(Color.parseColor("#FFFFFF"));
+
+                Globle.selectedDate = bean.year+"-"+bean.moth+"-"+bean.day;
+
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(view, potsion, bean);
+                }
             }
         });
     }
