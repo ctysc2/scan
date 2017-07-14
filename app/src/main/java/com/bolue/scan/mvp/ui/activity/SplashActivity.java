@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.bolue.scan.R;
+import com.bolue.scan.application.App;
 import com.bolue.scan.listener.AlertDialogListener;
 import com.bolue.scan.mvp.ui.activity.base.BaseActivity;
 import com.bolue.scan.utils.DialogUtils;
@@ -62,6 +63,7 @@ public class SplashActivity extends BaseActivity implements AlertDialogListener{
 
                     }
                 });
+        App.isKicked = false;
     }
 
     RxPermissions rxPermissions;
